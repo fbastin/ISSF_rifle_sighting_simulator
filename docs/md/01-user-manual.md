@@ -40,6 +40,7 @@ The canvas is divided into three regions (*User Manual*).
 | **K** / **L** | Wind direction $\pm 8.6^{\circ}$ | full circle | *Wind Drift* |
 | **T** | Toggle 10 m / 50 m target | — | *Exterior Ballistics: Gravity and Trajectory* |
 | **R** | Reset all parameters to defaults | — | — |
+| **F** | Toggle language (English / French) | — | — |
 
 
 ## Quick-Start Walkthrough

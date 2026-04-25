@@ -3,28 +3,50 @@ const ctx = c.getContext("2d");
 
 const W = c.width, H_canvas = c.height;
 const split = W / 2;
-const panelH = 85; // Increased panel height to fit new controls
+const panelH = 85;
 const cx = W / 4, cy = (H_canvas - panelH) / 2;
 
+// --- I18N ---
+const i18n = {
+  en: {
+    rear: "Rear", front: "Front", thick: "Thick", relief: "Relief",
+    target: "Target", score: "Score", offset: "Offset",
+    drop: "Drop", cant: "Cant", height: "Height", clicks: "Clicks",
+    parallax: "Parallax", impact: "Impact", wind: "Wind",
+    ctrl1: "Ctrl 1: C/V(Thick) | A/D(Rear) | Q/E(Front) | U/J(Relief) | W/S(Sight H.) | Z/X(Cant)",
+    ctrl2: "Ctrl 2: Arrows(Clicks) | O/P(Wind Spd) | K/L(Wind Dir) | T(Target) | R(Reset) | F(FR/EN)"
+  },
+  fr: {
+    rear: "Arr.", front: "Avant", thick: "Epais.", relief: "Dég.",
+    target: "Cible", score: "Score", offset: "Écart",
+    drop: "Chute", cant: "Incl.", height: "Haut.", clicks: "Clics",
+    parallax: "Parallaxe", impact: "Impact", wind: "Vent",
+    ctrl1: "Ctrl 1: C/V(Épais.) | A/D(Arr.) | Q/E(Avant) | U/J(Dég.) | W/S(Haut.) | Z/X(Incl.)",
+    ctrl2: "Ctrl 2: Flèches(Clics) | O/P(Vit.vent) | K/L(Dir.vent) | T(Cible) | R(Réinit.) | F(FR/EN)"
+  }
+};
+let lang = (typeof SIMULATOR_LANG !== "undefined") ? SIMULATOR_LANG : "en";
+function t(key) { return i18n[lang][key]; }
+
 // --- PHYSICAL CONSTANTS & SCALE ---
-const PX_PER_MM = 6.0; 
-const rearZ = 220;   
-const frontZ = 350;  
-const targetZ = 480; 
-const GRAVITY = 9.81; 
+const PX_PER_MM = 6.0;
+const rearZ = 220;
+const frontZ = 350;
+const targetZ = 480;
+const GRAVITY = 9.81;
 
 // --- UPDATED DEFAULTS ---
-let eyeZ = 190;            
-let rearAperture_mm = 1.6; 
-let frontIris_mm = 3.8;    
-let frontThickness_mm = 2.0; 
-let sightHeight_mm = 60.0; 
+let eyeZ = 190;
+let rearAperture_mm = 1.6;
+let frontIris_mm = 3.8;
+let frontThickness_mm = 2.0;
+let sightHeight_mm = 60.0;
 let cant = 0;
 let targetType = "10m";
 
 // --- WIND DEFAULTS ---
-let windSpeed_ms = 0.0;     
-let windDir_rad = Math.PI / 2; // 90 deg = crosswind from left to right
+let windSpeed_ms = 0.0;
+let windDir_rad = Math.PI / 2;
 
 // Geometry offsets (pixels)
 let eyeXoff = 0, eyeYoff = 0;
@@ -68,6 +90,7 @@ document.addEventListener("keydown", e => {
   if(key === "l") windDir_rad += 0.15; // Rotate CW
 
   if(key === "t") targetType = targetType === "10m" ? "50m" : "10m";
+  if(key === "f") lang = lang === "en" ? "fr" : "en";
 
   if(key === "r") {
     eyeZ = 190;
@@ -326,20 +349,20 @@ function drawPanel(d) {
   const relief_mm = (rearZ - eyeZ).toFixed(0);
   
   // Row 1
-  ctx.fillText(`Rear: ${rearAperture_mm.toFixed(1)}mm | Front: ${frontIris_mm.toFixed(1)}mm | Thick: ${frontThickness_mm.toFixed(1)}mm | Relief: ${relief_mm}mm`, 10, H_canvas-65);
-  ctx.fillText(`Target: ${targetType}`, 500, H_canvas-65);
-  ctx.fillText(`Score: ${computeScore(d.finalX, d.finalY).toFixed(1)}  (Offset: X:${xStr} Y:${yStr}mm)`, 650, H_canvas-65);
+  ctx.fillText(`${t("rear")}: ${rearAperture_mm.toFixed(1)}mm | ${t("front")}: ${frontIris_mm.toFixed(1)}mm | ${t("thick")}: ${frontThickness_mm.toFixed(1)}mm | ${t("relief")}: ${relief_mm}mm`, 10, H_canvas-65);
+  ctx.fillText(`${t("target")}: ${targetType}`, 500, H_canvas-65);
+  ctx.fillText(`${t("score")}: ${computeScore(d.finalX, d.finalY).toFixed(1)}  (${t("offset")}: X:${xStr} Y:${yStr}mm)`, 650, H_canvas-65);
 
   // Row 2
-  ctx.fillText(`Drop: ${d.gravityDrop_mm.toFixed(1)}mm | Cant: ${(cant*180/Math.PI).toFixed(1)}° | Height: ${sightHeight_mm}mm | Clicks(X,Y): ${clickX},${clickY}`, 10, H_canvas-45);
-  ctx.fillStyle = "cyan"; ctx.fillText("○ Cyan: Parallax", 500, H_canvas-45);
-  ctx.fillStyle = "red";  ctx.fillText("● Red: Impact", 650, H_canvas-45);
-  ctx.fillStyle = "#0f0"; ctx.fillText(`Wind: ${windSpeed_ms.toFixed(1)} m/s @ ${degreesDir.toFixed(0)}°`, 800, H_canvas-45);
+  ctx.fillText(`${t("drop")}: ${d.gravityDrop_mm.toFixed(1)}mm | ${t("cant")}: ${(cant*180/Math.PI).toFixed(1)}° | ${t("height")}: ${sightHeight_mm}mm | ${t("clicks")}(X,Y): ${clickX},${clickY}`, 10, H_canvas-45);
+  ctx.fillStyle = "cyan"; ctx.fillText(`○ ${t("parallax")}`, 500, H_canvas-45);
+  ctx.fillStyle = "red";  ctx.fillText(`● ${t("impact")}`, 650, H_canvas-45);
+  ctx.fillStyle = "#0f0"; ctx.fillText(`${t("wind")}: ${windSpeed_ms.toFixed(1)} m/s @ ${degreesDir.toFixed(0)}°`, 800, H_canvas-45);
 
   // Row 3 (Controls)
   ctx.fillStyle = "#aaa";
-  ctx.fillText("Ctrl 1: C/V(Thick) | A/D(Rear) | Q/E(Front) | U/J(Relief) | W/S(Sight H.) | Z/X(Cant)", 10, H_canvas-25);
-  ctx.fillText("Ctrl 2: Arrows(Clicks) | O/P(Wind Spd) | K/L(Wind Dir) | T(Toggle Target) | R(Reset)", 10, H_canvas-10);
+  ctx.fillText(t("ctrl1"), 10, H_canvas-25);
+  ctx.fillText(t("ctrl2"), 10, H_canvas-10);
 }
 
 function loop() {
