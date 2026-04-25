@@ -1,0 +1,55 @@
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
+\contentsline {section}{\numberline {2}User Manual}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Running the Simulator}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Interface Layout}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Controls Reference}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Quick-Start Walkthrough}{4}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Parallax Error}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}The Issue for Competitive Shooters}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Why It Matters}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Physical Explanation and Illustration}{5}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Implementation}{5}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Simulator Exercises}{6}{subsection.3.5}%
+\contentsline {section}{\numberline {4}Aperture Size and Eye Relief}{6}{section.4}%
+\contentsline {subsection}{\numberline {4.1}The Issue for Competitive Shooters}{6}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Why It Matters}{6}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Physical Explanation and Illustration}{7}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Implementation}{7}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Simulator Exercises}{7}{subsection.4.5}%
+\contentsline {section}{\numberline {5}Exterior Ballistics: Gravity and Trajectory}{8}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The Issue for Competitive Shooters}{8}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Why It Matters}{8}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Physical Explanation and Illustration}{8}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Mathematical Model}{8}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Implementation}{9}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Simulator Exercises}{9}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Rifle Cant}{9}{section.6}%
+\contentsline {subsection}{\numberline {6.1}The Issue for Competitive Shooters}{9}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Why It Matters}{9}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Physical Explanation and Illustration}{10}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Mathematical Model}{10}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Implementation}{10}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Simulator Exercises}{11}{subsection.6.6}%
+\contentsline {section}{\numberline {7}Mechanical Sight Adjustment (Clicks)}{11}{section.7}%
+\contentsline {subsection}{\numberline {7.1}The Issue for Competitive Shooters}{11}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Why It Matters}{11}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Physical Explanation and Illustration}{11}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Mathematical Model}{12}{subsection.7.4}%
+\contentsline {subsection}{\numberline {7.5}Implementation}{12}{subsection.7.5}%
+\contentsline {subsection}{\numberline {7.6}Simulator Exercises}{12}{subsection.7.6}%
+\contentsline {section}{\numberline {8}Wind Drift}{12}{section.8}%
+\contentsline {subsection}{\numberline {8.1}The Issue for Competitive Shooters}{12}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Why It Matters}{12}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Physical Explanation and Illustration}{13}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Mathematical Model}{13}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Implementation}{13}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}Simulator Exercises}{14}{subsection.8.6}%
+\contentsline {section}{\numberline {9}Scoring Model}{14}{section.9}%
+\contentsline {subsection}{\numberline {9.1}ISSF Decimal Scoring}{14}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Mathematical Model}{14}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Implementation}{14}{subsection.9.3}%
+\contentsline {section}{\numberline {10}Implementation Notes}{15}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Coordinate System}{15}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Rendering Pipeline}{15}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Physical Constants and Defaults}{15}{subsection.10.3}%
+\contentsline {section}{\numberline {11}Summary of Corrections Applied}{16}{section.11}%
