@@ -68,6 +68,20 @@ document.addEventListener("keydown", e => {
   if(key === "l") windDir_rad += 0.15; // Rotate CW
 
   if(key === "t") targetType = targetType === "10m" ? "50m" : "10m";
+
+  if(key === "r") {
+    eyeZ = 190;
+    rearAperture_mm = 1.6;
+    frontIris_mm = 3.8;
+    frontThickness_mm = 2.0;
+    sightHeight_mm = 60.0;
+    cant = 0;
+    targetType = "10m";
+    windSpeed_ms = 0.0;
+    windDir_rad = Math.PI / 2;
+    frontXoff = 0;
+    frontYoff = 0;
+  }
 });
 
 function compute() {
@@ -325,7 +339,7 @@ function drawPanel(d) {
   // Row 3 (Controls)
   ctx.fillStyle = "#aaa";
   ctx.fillText("Ctrl 1: C/V(Thick) | A/D(Rear) | Q/E(Front) | U/J(Relief) | W/S(Sight H.) | Z/X(Cant)", 10, H_canvas-25);
-  ctx.fillText("Ctrl 2: Arrows(Clicks) | O/P(Wind Spd) | K/L(Wind Dir) | T(Toggle Target)", 10, H_canvas-10);
+  ctx.fillText("Ctrl 2: Arrows(Clicks) | O/P(Wind Spd) | K/L(Wind Dir) | T(Toggle Target) | R(Reset)", 10, H_canvas-10);
 }
 
 function loop() {

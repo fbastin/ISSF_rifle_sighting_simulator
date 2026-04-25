@@ -2,7 +2,7 @@
 
 ## Running the Simulator
 
-Open `sight.html` in any modern web browser. The page loads
+Open `index.html` in any modern web browser. The page loads
 `simulator.js`, which renders the simulation onto an HTML5
 `<canvas>` element at 1000 $\times$ 600 pixels. No server or
 build step is required.
@@ -39,12 +39,13 @@ The canvas is divided into three regions (*User Manual*).
 | **O** / **P** | Wind speed $\pm 0.5$ m/s | 0–10 m/s | *Wind Drift* |
 | **K** / **L** | Wind direction $\pm 8.6^{\circ}$ | full circle | *Wind Drift* |
 | **T** | Toggle 10 m / 50 m target | — | *Exterior Ballistics: Gravity and Trajectory* |
+| **R** | Reset all parameters to defaults | — | — |
 
 
 ## Quick-Start Walkthrough
 
 
-1. Open `sight.html`. The default view shows a 10 m air-rifle sight picture centered on the target.
+1. Open `index.html`. The default view shows a 10 m air-rifle sight picture centered on the target.
 2. Move the mouse across the left panel and observe both the sight picture shift and the cyan circle moving on the right panel. This is *parallax* (*Parallax Error*).
 3. Press **Z** several times to cant the rifle. Watch the spirit level and the red impact dot on the right panel shift right *and* down (*Rifle Cant*).
 4. Use the arrow keys to bring the red dot back to center—these are sight “clicks” (*Mechanical Sight Adjustment (Clicks)*).

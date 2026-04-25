@@ -60,7 +60,7 @@
 
 \title{\textbf{ISSF Rifle Sighting Simulator}\\[4pt]
        \large Mathematical Foundation, Physics Reference, and User Guide}
-\author{Documentation for \texttt{simulator.js} / \texttt{sight.html}}
+\author{Documentation for \texttt{simulator.js} / \texttt{index.html}}
 \date{April 2026}
 
 % ══════════════════════════════════════════════════════════════════════
@@ -113,7 +113,7 @@ suggested exercises with the simulator.
 % ══════════════════════════════════════════════════════════════════════
 
 \subsection{Running the Simulator}
-Open \file{sight.html} in any modern web browser. The page loads
+Open \file{index.html} in any modern web browser. The page loads
 \file{simulator.js}, which renders the simulation onto an HTML5
 \code{<canvas>} element at 1000\,$\times$\,600 pixels. No server or
 build step is required.
@@ -207,6 +207,9 @@ Arrow keys            & Mechanical clicks $\pm 1$\,px
 \key{T}              & Toggle 10\,m / 50\,m target
                       & ---
                       & \cref{sec:ballistics} \\
+\key{R}              & Reset all parameters to defaults
+                      & ---
+                      & --- \\
 \bottomrule
 \end{tabular}
 \caption{Complete keyboard and mouse controls.}\label{tab:controls}
@@ -215,7 +218,7 @@ Arrow keys            & Mechanical clicks $\pm 1$\,px
 \subsection{Quick-Start Walkthrough}\label{sec:quickstart}
 
 \begin{enumerate}[nosep]
-  \item Open \file{sight.html}. The default view shows a 10\,m air-rifle
+  \item Open \file{index.html}. The default view shows a 10\,m air-rifle
         sight picture centered on the target.
   \item Move the mouse across the left panel and observe both the sight picture
         shift and the cyan circle moving on the right panel.  This is

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISSF Rifle Sighting Simulator</title>
+<style>
+:root {
+  --color-accent: #2E5A1C;
+  --color-bg: #fdfdfd;
+  --color-text: #2c3e50;
+  --color-border: #e0e4e8;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+      Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  --max-width: 1060px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; padding: 0;
+  font-family: var(--font-sans);
+  font-size: 16px; line-height: 1.7;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+.wrapper {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+h1 {
+  font-size: 1.6rem;
+  border-bottom: 3px solid var(--color-accent);
+  padding-bottom: .4rem;
+  margin-top: 0;
+}
+h2 { font-size: 1.15rem; margin-top: 1.8rem; }
+p { margin: .6rem 0; }
+a { color: var(--color-accent); }
+.canvas-wrap {
+  text-align: center;
+  margin: 1.2rem 0;
+}
+canvas {
+  border: 1px solid #555;
+  cursor: crosshair;
+  max-width: 100%;
+  height: auto;
+}
+table {
+  border-collapse: collapse;
+  margin: .8rem 0;
+  font-size: .93rem;
+}
+th, td {
+  border: 1px solid var(--color-border);
+  padding: .35rem .7rem;
+  text-align: left;
+}
+th { background: #f1f5f9; font-weight: 600; }
+ul { padding-left: 1.4rem; }
+li { margin: .3rem 0; }
+.back { margin-top: 1.5rem; font-size: .95rem; }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<h1>ISSF Rifle Sighting Simulator</h1>
+
+<p>
+A browser-based pedagogical tool that models the optical and ballistic phenomena
+encountered in ISSF precision rifle marksmanship. Isolate and observe six
+fundamental effects: parallax error, aperture and eye-relief optics, exterior
+ballistics (gravity drop), the canting paradox, mechanical sight adjustment
+(clicks), and wind drift.
+</p>
+
+<div class="canvas-wrap">
+<canvas id="c" width="1000" height="600"></canvas>
+</div>
+
+<script src="simulator.js"></script>
+
+<h2>Controls</h2>
+
+<table>
+<tr><th>Input</th><th>Action</th></tr>
+<tr><td>Mouse position</td><td>Eye offset (parallax)</td></tr>
+<tr><td><strong>A</strong> / <strong>D</strong></td><td>Rear aperture &pm; 0.1 mm</td></tr>
+<tr><td><strong>Q</strong> / <strong>E</strong></td><td>Front iris &pm; 0.1 mm</td></tr>
+<tr><td><strong>C</strong> / <strong>V</strong></td><td>Iris ring thickness &pm; 0.1 mm</td></tr>
+<tr><td><strong>U</strong> / <strong>J</strong></td><td>Eye relief &pm; 1 mm</td></tr>
+<tr><td><strong>W</strong> / <strong>S</strong></td><td>Sight height &pm; 1 mm</td></tr>
+<tr><td><strong>Z</strong> / <strong>X</strong></td><td>Rifle cant &pm; 0.57&deg;</td></tr>
+<tr><td>Arrow keys</td><td>Mechanical clicks &pm; 1 px</td></tr>
+<tr><td><strong>O</strong> / <strong>P</strong></td><td>Wind speed &pm; 0.5 m/s</td></tr>
+<tr><td><strong>K</strong> / <strong>L</strong></td><td>Wind direction &pm; 8.6&deg;</td></tr>
+<tr><td><strong>T</strong></td><td>Toggle 10 m / 50 m target</td></tr>
+<tr><td><strong>R</strong></td><td>Reset all parameters to defaults</td></tr>
+</table>
+
+<h2>Documentation</h2>
+
+<ul>
+<li><a href="docs/">Online documentation</a> &mdash; parallax, aperture optics, ballistics, cant, clicks, wind drift, and scoring model, with mathematical derivations and simulator exercises</li>
+<li><a href="doc.pdf">PDF documentation</a></li>
+</ul>
+
+</div>
+
+</body>
+</html>
