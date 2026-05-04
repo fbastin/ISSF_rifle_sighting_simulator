@@ -53,6 +53,15 @@ let eyeXoff = 0, eyeYoff = 0;
 let frontXoff = 0, frontYoff = 0;
 
 // INPUT HANDLING
+let canvasFocused = false;
+c.tabIndex = 0;
+c.style.outline = "none";
+
+c.addEventListener("mouseenter", () => { canvasFocused = true; });
+c.addEventListener("mouseleave", () => { canvasFocused = false; });
+c.addEventListener("focus", () => { canvasFocused = true; });
+c.addEventListener("blur", () => { canvasFocused = false; });
+
 c.addEventListener("mousemove", e => {
   const r = c.getBoundingClientRect();
   eyeXoff = (e.clientX - r.left) - cx;
@@ -60,34 +69,37 @@ c.addEventListener("mousemove", e => {
 });
 
 document.addEventListener("keydown", e => {
+  if(!canvasFocused) return;
+
   const key = e.key.toLowerCase();
-  
+
   if(e.key === "ArrowUp") frontYoff -= 1;
   if(e.key === "ArrowDown") frontYoff += 1;
   if(e.key === "ArrowLeft") frontXoff -= 1;
   if(e.key === "ArrowRight") frontXoff += 1;
 
+  if(e.key.startsWith("Arrow")) e.preventDefault();
+
   if(key === "a") rearAperture_mm = Math.max(0.8, rearAperture_mm - 0.1);
   if(key === "d") rearAperture_mm = Math.min(2.2, rearAperture_mm + 0.1);
   if(key === "q") frontIris_mm = Math.max(2.4, frontIris_mm - 0.1);
   if(key === "e") frontIris_mm = Math.min(7.0, frontIris_mm + 0.1);
-  
+
   if(key === "c") frontThickness_mm = Math.max(0.5, frontThickness_mm - 0.1);
   if(key === "v") frontThickness_mm = Math.min(5.0, frontThickness_mm + 0.1);
 
-  if(key === "u") eyeZ = Math.min(rearZ - 5, eyeZ + 1); 
-  if(key === "j") eyeZ = Math.max(50, eyeZ - 1);        
-  
+  if(key === "u") eyeZ = Math.min(rearZ - 5, eyeZ + 1);
+  if(key === "j") eyeZ = Math.max(50, eyeZ - 1);
+
   if(key === "z") cant -= 0.01;
   if(key === "x") cant += 0.01;
   if(key === "w") sightHeight_mm += 1;
   if(key === "s") sightHeight_mm = Math.max(20, sightHeight_mm - 1);
-  
-  // NEW: Wind Controls
+
   if(key === "o") windSpeed_ms = Math.max(0, windSpeed_ms - 0.5);
   if(key === "p") windSpeed_ms = Math.min(10, windSpeed_ms + 0.5);
-  if(key === "k") windDir_rad -= 0.15; // Rotate CCW
-  if(key === "l") windDir_rad += 0.15; // Rotate CW
+  if(key === "k") windDir_rad -= 0.15;
+  if(key === "l") windDir_rad += 0.15;
 
   if(key === "t") targetType = targetType === "10m" ? "50m" : "10m";
   if(key === "f") lang = lang === "en" ? "fr" : "en";
