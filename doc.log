@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.19)  25 APR 2026 19:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.19)  24 AUG 2026 16:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -812,22 +812,22 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}] [4]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 329.
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 332.
  [5] [6] [7] [8] [9] [10] [11] [12]
-[13] [14]
-Overfull \hbox (11.16263pt too wide) in paragraph at lines 1065--1067
+[13] [14] [15]
+Overfull \hbox (11.16263pt too wide) in paragraph at lines 1093--1095
 \OT1/cmr/m/n/10.95 During the prepa-ra-tion of this doc-u-ment, two cor-rec-tio
 ns were iden-ti-fied and ap-plied to \OT1/cmtt/m/n/10.95 simulator.js\OT1/cmr/m
 /n/10.95 : 
  []
 
-[15]
-Overfull \hbox (12.17564pt too wide) in paragraph at lines 1069--1078
+
+Overfull \hbox (12.17564pt too wide) in paragraph at lines 1097--1106
 []\OT1/cmr/bx/n/10.95 Cant ver-ti-cal er-ror sign (line 93). \OT1/cmr/m/n/10.95
  The orig-i-nal code com-puted \OT1/cmtt/m/n/10.95 shiftY[]mm = -totalComp[]mm
  []
 
-[16] (./doc.aux)
+[16] [17] (./doc.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -836,13 +836,13 @@ Package rerunfilecheck Info: File `doc.out' has not changed.
 (rerunfilecheck)             Checksum: 081750A23A2EDEF1A27383433C5F1ACA;9347.
  ) 
 Here is how much of TeX's memory you used:
- 26332 strings out of 474222
- 494440 string characters out of 5748733
- 2048975 words of memory out of 5000000
- 47993 multiletter control sequences out of 15000+600000
+ 26342 strings out of 474222
+ 494598 string characters out of 5748733
+ 2003975 words of memory out of 5000000
+ 48000 multiletter control sequences out of 15000+600000
  571297 words of font info for 87 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 102i,11n,107p,405b,2031s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,11n,107p,475b,2031s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texl
@@ -864,10 +864,10 @@ pe1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmtt9.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1095.pfb
 >
-Output written on doc.pdf (16 pages, 347359 bytes).
+Output written on doc.pdf (17 pages, 351385 bytes).
 PDF statistics:
- 701 PDF objects out of 1000 (max. 8388607)
- 632 compressed objects within 7 object streams
- 196 named destinations out of 1000 (max. 500000)
+ 709 PDF objects out of 1000 (max. 8388607)
+ 639 compressed objects within 7 object streams
+ 199 named destinations out of 1000 (max. 500000)
  453 words of extra memory for PDF output out of 10000 (max. 10000000)
 

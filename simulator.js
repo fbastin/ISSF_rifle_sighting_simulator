@@ -12,17 +12,19 @@ const i18n = {
     rear: "Rear", front: "Front", thick: "Thick", relief: "Relief",
     target: "Target", score: "Score", offset: "Offset",
     drop: "Drop", cant: "Cant", height: "Height", clicks: "Clicks",
+    clickval: "Click val",
     parallax: "Parallax", impact: "Impact", wind: "Wind",
     ctrl1: "Ctrl 1: C/V(Thick) | A/D(Rear) | Q/E(Front) | U/J(Relief) | W/S(Sight H.) | Z/X(Cant)",
-    ctrl2: "Ctrl 2: Arrows(Clicks) | O/P(Wind Spd) | K/L(Wind Dir) | T(Target) | R(Reset) | F(FR/EN)"
+    ctrl2: "Ctrl 2: Arrows(Clicks) | G/H(Click Val) | O/P(Wind Spd) | K/L(Wind Dir) | T(Target) | R(Reset) | F(FR/EN)"
   },
   fr: {
     rear: "Arr.", front: "Avant", thick: "Epais.", relief: "Dég.",
     target: "Cible", score: "Score", offset: "Écart",
     drop: "Chute", cant: "Incl.", height: "Haut.", clicks: "Clics",
+    clickval: "Val. clic",
     parallax: "Parallaxe", impact: "Impact", wind: "Vent",
     ctrl1: "Ctrl 1: C/V(Épais.) | A/D(Arr.) | Q/E(Avant) | U/J(Dég.) | W/S(Haut.) | Z/X(Incl.)",
-    ctrl2: "Ctrl 2: Flèches(Clics) | O/P(Vit.vent) | K/L(Dir.vent) | T(Cible) | R(Réinit.) | F(FR/EN)"
+    ctrl2: "Ctrl 2: Flèches(Clics) | G/H(Val.clic) | O/P(Vit.vent) | K/L(Dir.vent) | T(Cible) | R(Réinit.) | F(FR/EN)"
   }
 };
 let lang = (typeof SIMULATOR_LANG !== "undefined") ? SIMULATOR_LANG : "en";
@@ -34,6 +36,12 @@ const rearZ = 220;
 const frontZ = 350;
 const targetZ = 480;
 const GRAVITY = 9.81;
+
+// --- REAR-SIGHT (DIOPTER) CLICKS ---
+// Impact shift per click: Delta = c * R / L  (see wiki page "La visée au dioptre")
+const SIGHT_RADIUS_mm = 800;   // diopter<->front-sight radius of a match rifle
+let clickValue_cmm = 4;        // click value in hundredths of mm (default 0.04 mm)
+let clickCountX = 0, clickCountY = 0;
 
 // --- UPDATED DEFAULTS ---
 let eyeZ = 190;
@@ -50,7 +58,6 @@ let windDir_rad = Math.PI / 2;
 
 // Geometry offsets (pixels)
 let eyeXoff = 0, eyeYoff = 0;
-let frontXoff = 0, frontYoff = 0;
 
 // INPUT HANDLING
 let canvasFocused = false;
@@ -73,12 +80,15 @@ document.addEventListener("keydown", e => {
 
   const key = e.key.toLowerCase();
 
-  if(e.key === "ArrowUp") frontYoff -= 1;
-  if(e.key === "ArrowDown") frontYoff += 1;
-  if(e.key === "ArrowLeft") frontXoff -= 1;
-  if(e.key === "ArrowRight") frontXoff += 1;
+  if(e.key === "ArrowUp") clickCountY += 1;
+  if(e.key === "ArrowDown") clickCountY -= 1;
+  if(e.key === "ArrowLeft") clickCountX -= 1;
+  if(e.key === "ArrowRight") clickCountX += 1;
 
   if(e.key.startsWith("Arrow")) e.preventDefault();
+
+  if(key === "g") clickValue_cmm = Math.max(1, clickValue_cmm - 1);
+  if(key === "h") clickValue_cmm = Math.min(10, clickValue_cmm + 1);
 
   if(key === "a") rearAperture_mm = Math.max(0.8, rearAperture_mm - 0.1);
   if(key === "d") rearAperture_mm = Math.min(2.2, rearAperture_mm + 0.1);
@@ -114,8 +124,9 @@ document.addEventListener("keydown", e => {
     targetType = "10m";
     windSpeed_ms = 0.0;
     windDir_rad = Math.PI / 2;
-    frontXoff = 0;
-    frontYoff = 0;
+    clickCountX = 0;
+    clickCountY = 0;
+    clickValue_cmm = 4;
   }
 });
 
@@ -127,14 +138,15 @@ function compute() {
   const f = Math.max(0.05, rearAperture_mm / 4.5); 
   px *= f; py *= f;
 
-  const mechanicalScale = (targetZ - rearZ) / (frontZ - rearZ);
-  const tx = frontXoff * mechanicalScale;
-  const ty = frontYoff * mechanicalScale;
-
+  // Rear-sight (diopter) clicks: Delta = c * R / L
   const dist_m = targetType === "10m" ? 10 : 50;
   const velocity_ms = targetType === "10m" ? 175.0 : 330.0; 
   const time_s = dist_m / velocity_ms;
   const gravityDrop_mm = 0.5 * GRAVITY * (time_s * time_s) * 1000;
+
+  const clickShift_mm = (clickValue_cmm / 100) * (dist_m * 1000) / SIGHT_RADIUS_mm;
+  const tx =  clickCountX * clickShift_mm * PX_PER_MM;
+  const ty = -clickCountY * clickShift_mm * PX_PER_MM;   // canvas Y grows downward
 
   // Cant Physics
   const totalComp_mm = sightHeight_mm + gravityDrop_mm;
@@ -177,8 +189,8 @@ function drawLeft(d) {
   
   ctx.filter = 'none'; 
 
-  const fx = cx + eyeXoff*0.18 + frontXoff;
-  const fy = cy + eyeYoff*0.18 + frontYoff;
+  const fx = cx + eyeXoff*0.18;
+  const fy = cy + eyeYoff*0.18;
 
   ctx.save();
   ctx.translate(fx, fy);
@@ -219,20 +231,21 @@ function drawLeft(d) {
 
   const relief = Math.max(5, rearZ - eyeZ);
   const rearR = (rearAperture_mm * 10) * (250 / relief);
+  const rearShiftX = clickCountX * 2, rearShiftY = -clickCountY * 2;
   
   ctx.fillStyle = "rgba(10,10,10,0.98)";
   ctx.beginPath();
   ctx.rect(0, 0, split, H_canvas - panelH);
-  ctx.arc(cx, cy, rearR, 0, Math.PI*2, true);
+  ctx.arc(cx + rearShiftX, cy + rearShiftY, rearR, 0, Math.PI*2, true);
   ctx.fill();
 
-  const grad = ctx.createRadialGradient(cx, cy, rearR - 8, cx, cy, rearR + 15);
+  const grad = ctx.createRadialGradient(cx + rearShiftX, cy + rearShiftY, rearR - 8, cx + rearShiftX, cy + rearShiftY, rearR + 15);
   grad.addColorStop(0, "rgba(10,10,10,0)");
   grad.addColorStop(1, "rgba(10,10,10,1)");
   ctx.fillStyle = grad;
   ctx.beginPath();
-  ctx.arc(cx, cy, rearR + 20, 0, Math.PI*2);
-  ctx.arc(cx, cy, rearR - 20, 0, Math.PI*2, true);
+  ctx.arc(cx + rearShiftX, cy + rearShiftY, rearR + 20, 0, Math.PI*2);
+  ctx.arc(cx + rearShiftX, cy + rearShiftY, rearR - 20, 0, Math.PI*2, true);
   ctx.fill();
   
   const bx = cx, by = H_canvas - panelH - 40;
@@ -352,8 +365,11 @@ function drawPanel(d) {
   const xStr = (offsetX_mm > 0 ? "+" : "") + offsetX_mm.toFixed(1);
   const yStr = (offsetY_mm > 0 ? "+" : "") + offsetY_mm.toFixed(1);
 
-  const clickX = (frontXoff > 0 ? "+" : "") + frontXoff;
-  const clickY = (-frontYoff > 0 ? "+" : "") + (-frontYoff);
+  const clickX = (clickCountX > 0 ? "+" : "") + clickCountX;
+  const clickY = (clickCountY > 0 ? "+" : "") + clickCountY;
+  const clickDist_m = targetType === "10m" ? 10 : 50;
+  const click_mm = Math.hypot(clickCountX, clickCountY) * (clickValue_cmm / 100)
+                 * (clickDist_m * 1000) / SIGHT_RADIUS_mm;
 
   let degreesDir = (windDir_rad * 180 / Math.PI) % 360;
   if(degreesDir < 0) degreesDir += 360;
@@ -366,7 +382,7 @@ function drawPanel(d) {
   ctx.fillText(`${t("score")}: ${computeScore(d.finalX, d.finalY).toFixed(1)}  (${t("offset")}: X:${xStr} Y:${yStr}mm)`, 650, H_canvas-65);
 
   // Row 2
-  ctx.fillText(`${t("drop")}: ${d.gravityDrop_mm.toFixed(1)}mm | ${t("cant")}: ${(cant*180/Math.PI).toFixed(1)}° | ${t("height")}: ${sightHeight_mm}mm | ${t("clicks")}(X,Y): ${clickX},${clickY}`, 10, H_canvas-45);
+  ctx.fillText(`${t("drop")}: ${d.gravityDrop_mm.toFixed(1)}mm | ${t("cant")}: ${(cant*180/Math.PI).toFixed(1)}° | ${t("height")}: ${sightHeight_mm}mm | ${t("clicks")}: ${clickX},${clickY} (${click_mm.toFixed(1)}mm)`, 10, H_canvas-45);
   ctx.fillStyle = "cyan"; ctx.fillText(`○ ${t("parallax")}`, 500, H_canvas-45);
   ctx.fillStyle = "red";  ctx.fillText(`● ${t("impact")}`, 650, H_canvas-45);
   ctx.fillStyle = "#0f0"; ctx.fillText(`${t("wind")}: ${windSpeed_ms.toFixed(1)} m/s @ ${degreesDir.toFixed(0)}°`, 800, H_canvas-45);
@@ -374,7 +390,7 @@ function drawPanel(d) {
   // Row 3 (Controls)
   ctx.fillStyle = "#aaa";
   ctx.fillText(t("ctrl1"), 10, H_canvas-25);
-  ctx.fillText(t("ctrl2"), 10, H_canvas-10);
+  ctx.fillText(`${t("ctrl2")} | ${t("clickval")}: ${(clickValue_cmm/100).toFixed(2)}mm`, 10, H_canvas-10);
 }
 
 function loop() {

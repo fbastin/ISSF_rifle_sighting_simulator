@@ -33,23 +33,23 @@
 \contentsline {section}{\numberline {7}Mechanical Sight Adjustment (Clicks)}{11}{section.7}%
 \contentsline {subsection}{\numberline {7.1}The Issue for Competitive Shooters}{11}{subsection.7.1}%
 \contentsline {subsection}{\numberline {7.2}Why It Matters}{11}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Physical Explanation and Illustration}{11}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.3}Physical Explanation and Illustration}{12}{subsection.7.3}%
 \contentsline {subsection}{\numberline {7.4}Mathematical Model}{12}{subsection.7.4}%
 \contentsline {subsection}{\numberline {7.5}Implementation}{12}{subsection.7.5}%
 \contentsline {subsection}{\numberline {7.6}Simulator Exercises}{12}{subsection.7.6}%
-\contentsline {section}{\numberline {8}Wind Drift}{12}{section.8}%
-\contentsline {subsection}{\numberline {8.1}The Issue for Competitive Shooters}{12}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Why It Matters}{12}{subsection.8.2}%
+\contentsline {section}{\numberline {8}Wind Drift}{13}{section.8}%
+\contentsline {subsection}{\numberline {8.1}The Issue for Competitive Shooters}{13}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Why It Matters}{13}{subsection.8.2}%
 \contentsline {subsection}{\numberline {8.3}Physical Explanation and Illustration}{13}{subsection.8.3}%
 \contentsline {subsection}{\numberline {8.4}Mathematical Model}{13}{subsection.8.4}%
-\contentsline {subsection}{\numberline {8.5}Implementation}{13}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.5}Implementation}{14}{subsection.8.5}%
 \contentsline {subsection}{\numberline {8.6}Simulator Exercises}{14}{subsection.8.6}%
 \contentsline {section}{\numberline {9}Scoring Model}{14}{section.9}%
 \contentsline {subsection}{\numberline {9.1}ISSF Decimal Scoring}{14}{subsection.9.1}%
-\contentsline {subsection}{\numberline {9.2}Mathematical Model}{14}{subsection.9.2}%
-\contentsline {subsection}{\numberline {9.3}Implementation}{14}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.2}Mathematical Model}{15}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Implementation}{15}{subsection.9.3}%
 \contentsline {section}{\numberline {10}Implementation Notes}{15}{section.10}%
 \contentsline {subsection}{\numberline {10.1}Coordinate System}{15}{subsection.10.1}%
 \contentsline {subsection}{\numberline {10.2}Rendering Pipeline}{15}{subsection.10.2}%
-\contentsline {subsection}{\numberline {10.3}Physical Constants and Defaults}{15}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.3}Physical Constants and Defaults}{16}{subsection.10.3}%
 \contentsline {section}{\numberline {11}Summary of Corrections Applied}{16}{section.11}%

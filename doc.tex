@@ -97,7 +97,7 @@ range:
         introduces \emph{both} a lateral shift and a vertical drop
         (\cref{sec:cant}).
   \item \textbf{Mechanical sight adjustment}---how ``clicks'' on the
-        front sight translate into impact shifts on the target
+        rear diopter translate into impact shifts on the target
         (\cref{sec:clicks}).
   \item \textbf{Wind drift}---lateral and vertical deflection caused
         by atmospheric conditions (\cref{sec:wind}).
@@ -195,8 +195,11 @@ Mouse position        & Eye offset (parallax)
 \key{Z}\,/\,\key{X}  & Rifle cant $\pm 0.57^{\circ}$
                       & unlimited
                       & \cref{sec:cant} \\
-Arrow keys            & Mechanical clicks $\pm 1$\,px
+Arrow keys            & Rear-sight clicks $\pm 1$
                       & unlimited
+                      & \cref{sec:clicks} \\
+\key{G}\,/\,\key{H}  & Click value $\pm 0.01$\,mm
+                      & 0.01--0.10\,mm
                       & \cref{sec:clicks} \\
 \key{O}\,/\,\key{P}  & Wind speed $\pm 0.5$\,m/s
                       & 0--10\,m/s
@@ -728,20 +731,25 @@ implementation: $\Delta y = C(1-\cos\theta) \geq 0$.
 % ══════════════════════════════════════════════════════════════════════
 
 \subsection{The Issue for Competitive Shooters}
-After establishing a natural point of aim, the shooter adjusts the
-front sight to bring the group center onto the target center.
-These adjustments---commonly called ``clicks'' because many
-mechanisms produce an audible click per increment---physically
-displace the front-sight element relative to the barrel, changing
-the angle between the bore and the line of sight~\cite{nra}.
+After establishing a natural point of aim, the shooter brings the
+group center onto the target center with the \emph{rear} sight---the
+diopter aperture in ISSF rifle shooting.  These adjustments---commonly
+called ``clicks'' because the mechanism produces an audible click per
+increment---physically displace the aperture relative to the barrel,
+changing the angle between the bore and the line of
+sight~\cite{nra}.  Match diopters move a few hundredths of a
+millimetre per click: the simulator default is $c = 0.04$\,mm, and the
+value is adjustable with \key{G}/\key{H} over $0.01$--$0.10$\,mm.
 
 \subsection{Why It Matters}
 Correct use of sight adjustments is essential for zeroing and for
 responding to changing conditions (wind, light, temperature).
-Understanding the \emph{lever-arm geometry} helps the shooter
-predict how many clicks are needed for a given correction and why
-front-sight adjustments move the group in the \emph{same} direction
-as the adjustment.
+Understanding the \emph{lever-arm geometry} helps the shooter predict
+how many clicks are needed for a given correction.  The rule of
+direction follows from the geometry: a \emph{rear}-sight click moves
+the impact in the \emph{same} direction as the click, while a
+\emph{front}-sight adjustment (insert height) moves it in the
+\emph{opposite} direction.
 
 \subsection{Physical Explanation and Illustration}
 
@@ -754,67 +762,87 @@ as the adjustment.
   \node[above,font=\small] at (2,2.2) {Rear ($z_r$)};
   \draw[dashed,gray] (5.5,-2.2) -- (5.5,2.2);
   \node[above,font=\small] at (5.5,2.2) {Front ($z_f$)};
-  \draw[dashed,gray] (11,-2.2) -- (11,2.2);
-  \node[above,font=\small] at (11,2.2) {Target ($z_t$)};
+  \draw[dashed,gray] (11,-2.2) -- (11,2.6);
+  \node[above,font=\small] at (11,2.6) {Target ($z_t$)};
   % Original line of sight
   \draw[gray,thin] (2,0) -- (11,0);
-  % Front sight displaced
-  \filldraw[blue] (5.5,0.8) circle (2pt)
-    node[above left,font=\small] {Front$'$};
-  \filldraw[gray] (5.5,0) circle (2pt)
-    node[below left,font=\small] {Front};
-  % New line of sight
-  \draw[red,thick] (2,0) -- (5.5,0.8) -- (11,1.88);
-  \filldraw[red] (11,1.88) circle (2.5pt)
+  % Rear sight displaced upward by c
+  \filldraw[blue] (2,0) circle (2pt)
+    node[below left,font=\small] {Rear};
+  \filldraw[blue] (2,0.8) circle (2pt)
+    node[above left,font=\small] {Rear$'$};
+  \draw[<->,thick,blue] (1.5,0) -- (1.5,0.8)
+    node[midway,left,font=\scriptsize] {$c$};
+  % Sight line after re-centering: passes through rear' and target center
+  \draw[red,thick] (2,0.8) -- (11,0);
+  \filldraw[red] (5.5,0.489) circle (2pt)
+    node[above right,font=\small] {Front$'$};
+  % Rotation angle at the displaced aperture
+  \draw[->,red,thin] (3.6,0.8) arc[start angle=0,end angle=-6,radius=1.6];
+  \node[font=\small,red] at (4.6,0.45) {$\theta = c/L$};
+  % Impact shift at the target: bore rotated by theta
+  \draw[->,red,very thick] (11,0) -- (11,1.0)
+    node[midway,right,font=\scriptsize] {$\Delta = c \cdot R / L$};
+  \filldraw[red] (11,1.0) circle (2.5pt)
     node[right,font=\small] {Impact$'$};
   \filldraw[gray] (11,0) circle (2.5pt)
-    node[right,font=\small] {Impact};
-  % Front offset
-  \draw[<->,thick,blue] (5.0,0) -- (5.0,0.8)
-    node[midway,left,font=\scriptsize] {$\delta$};
-  % Target offset
-  \draw[<->,thick,red] (11.6,0) -- (11.6,1.88)
-    node[midway,right,font=\scriptsize] {$\delta \cdot M$};
-  % Lever arm annotation
-  \node[font=\small,align=center] at (6.5,-2.8)
-    {$\displaystyle M = \frac{z_t - z_r}{z_f - z_r}$};
+    node[left,font=\small] {aim};
 \end{tikzpicture}
-\caption{Mechanical sight adjustment geometry.  A front-sight
-displacement $\delta$ is amplified by the lever-arm ratio $M$ at
-the target.}
+\caption{Mechanical sight adjustment geometry.  A rear-aperture click
+$c$ tilts the line of sight by $\theta = c/L$ ($L$: sight radius).
+Re-centering the sight picture rotates the whole gun---and the bore
+with it---by $\theta$, so the impact moves by $\Delta = c\,R/L$ at the
+target distance $R$, in the \emph{same} direction as the click.}
 \label{fig:clicks}
 \end{figure}
 
 \subsection{Mathematical Model}
-The line of sight pivots about the rear sight.  When the front sight
-is displaced by $\delta$ (in pixels or mm), the intercept theorem
-gives the impact shift at the target as:
-\begin{equation}\label{eq:clicks}
-  \Delta_{\text{target}} = \delta \cdot M,
-  \qquad M = \frac{z_t - z_r}{z_f - z_r}\,.
-\end{equation}
-With the default values $z_r = 220$, $z_f = 350$, $z_t = 480$:
+When the aperture is displaced by $c$ and the shooter re-centers the
+sight picture, the gun rotates by the small angle
 \[
-  M = \frac{480 - 220}{350 - 220} = \frac{260}{130} = 2.0\,.
+  \theta = \frac{c}{L},
+  \qquad L = z_f - z_r \ \text{(sight radius)},
 \]
-A one-pixel front-sight click produces a two-pixel impact shift at
-the target.  Because the line of sight passes \emph{through} the
-displaced front sight, the impact moves in the \emph{same}
-direction as the front-sight adjustment.
+and the bore follows.  At a target distance $R$ the impact therefore
+moves
+\begin{equation}\label{eq:clicks}
+  \Delta_{\text{target}} = c \times \frac{R}{L}.
+\end{equation}
+With the simulator's default click value $c = 0.04$\,mm and a match
+sight radius $L = 800$\,mm:
+\[
+  \Delta = 0.04 \times \frac{10\,000}{800} = 0.5\ \text{mm per click at 10 m},
+  \qquad
+  \Delta = 0.04 \times \frac{50\,000}{800} = 2.5\ \text{mm per click at 50 m}.
+\]
+Because the sight line is re-centered through the displaced aperture,
+the impact moves in the \emph{same} direction as a rear-sight click.
+A \emph{front}-sight displacement would tilt the line of sight the
+other way: re-centering would rotate the gun \emph{against} the
+adjustment, and the impact would move \emph{opposite} to it.  (The
+exact pivot of the re-centering rotation only contributes
+second-order terms; see the wiki page ``La visée au dioptre'', which
+develops the same relation from Thales' theorem.)
 
 \subsection{Implementation}
-In \file{simulator.js}, lines~81--83:
+In \file{simulator.js}, the click value (in hundredths of a
+millimetre) and the per-click shift are:
 \begin{lstlisting}
-const mechanicalScale = (targetZ - rearZ) / (frontZ - rearZ);
-const tx = frontXoff * mechanicalScale;
-const ty = frontYoff * mechanicalScale;
+const SIGHT_RADIUS_mm = 800;               // diopter<->front sight
+const clickShift_mm = (clickValue_cmm / 100) * (dist_m * 1000) / SIGHT_RADIUS_mm;
+const tx =  clickCountX * clickShift_mm * PX_PER_MM;
+const ty = -clickCountY * clickShift_mm * PX_PER_MM;  // canvas Y is down
 \end{lstlisting}
 
 \subsection{Simulator Exercises}
 \begin{enumerate}[nosep]
   \item Press the right arrow key several times.  The red dot moves
-        right on the target---the front sight has been displaced
-        rightward, tilting the line of sight rightward.
+        right on the target: a rear-sight click moves the impact in
+        the \emph{same} direction---$0.5$\,mm per click at 10 m,
+        $2.5$\,mm at 50 m with the default value.
+  \item Press \key{G}/\key{H} to change the click value and watch the
+        per-click shift scale proportionally: the lever-arm ratio
+        $R/L$ is fixed by the rifle, the click value by the sight.
   \item Combine clicks with cant (\key{Z}/\key{X}) to practice the
         real-world workflow of zeroing under imperfect conditions.
 \end{enumerate}

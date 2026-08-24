@@ -35,7 +35,8 @@ The canvas is divided into three regions (*User Manual*).
 | **U** / **J** | Eye relief $\pm 1$ mm | 50–215 mm | *Aperture Size and Eye Relief* |
 | **W** / **S** | Sight height $\pm 1$ mm | $\geq 20$ mm | *Exterior Ballistics: Gravity and Trajectory* |
 | **Z** / **X** | Rifle cant $\pm 0.57^{\circ}$ | unlimited | *Rifle Cant* |
-| Arrow keys | Mechanical clicks $\pm 1$ px | unlimited | *Mechanical Sight Adjustment (Clicks)* |
+| Arrow keys | Rear-sight clicks $\pm 1$ | unlimited | *Mechanical Sight Adjustment (Clicks)* |
+| **G**/**H** | Click value $\pm 0.01$ mm | 0.01–0.10 mm | *Mechanical Sight Adjustment (Clicks)* |
 | **O** / **P** | Wind speed $\pm 0.5$ m/s | 0–10 m/s | *Wind Drift* |
 | **K** / **L** | Wind direction $\pm 8.6^{\circ}$ | full circle | *Wind Drift* |
 | **T** | Toggle 10 m / 50 m target | — | *Exterior Ballistics: Gravity and Trajectory* |
