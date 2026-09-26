@@ -62,7 +62,9 @@ let eyeXoff = 0, eyeYoff = 0;
 // INPUT HANDLING
 let canvasFocused = false;
 c.tabIndex = 0;
-c.style.outline = "none";
+// Pas de « outline: none » : le canevas se pilote au clavier, et le supprimer
+// rendait le focus invisible (WCAG 2.4.7, 2026-09-26). Le contour vient du CSS
+// du site (canvas:focus-visible), qui ne s'affiche qu'au clavier, pas à la souris.
 
 c.addEventListener("mouseenter", () => { canvasFocused = true; });
 c.addEventListener("mouseleave", () => { canvasFocused = false; });
