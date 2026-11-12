@@ -53,9 +53,10 @@ The canvas is divided into three regions (*User Manual*).
 2. Move the mouse across the left panel and observe both the sight picture
         shift and the cyan circle moving on the right panel.  This is
         *parallax* (*Parallax Error*).
-3. Press **X** several times to cant the rifle clockwise.  Watch
-        the spirit level and the red impact dot on the right panel shift
-        right *and* down (*Rifle Cant*).
+3. Press **X** several times to cant the rifle clockwise.  The
+        bubble of the spirit level moves left, to the high side, and the
+        red impact dot on the right panel shifts right *and* down
+        (*Rifle Cant*).
 4. Use the arrow keys to bring the red dot back to center—these
         are sight “clicks” (*Mechanical Sight Adjustment (Clicks)*).
 5. Press **T** to switch to the 50 m target and observe how

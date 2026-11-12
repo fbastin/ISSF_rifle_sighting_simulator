@@ -41,6 +41,9 @@ The following corrections were identified and applied to
     The score was rounded to one decimal (9.96 shown as 10.0); ISSF
     zones run from `.0` to `.9`, so the value is now
     truncated (9.9), and a shot outside ring 1 scores 0.
+7. **Spirit level (2026-11-12).**
+    The bubble moved toward the low side of the cant.  A bubble rises
+    to the high side: it now moves left for a clockwise cant.
 
 The backup file `simulator.best.js` retains the original code
 for reference.

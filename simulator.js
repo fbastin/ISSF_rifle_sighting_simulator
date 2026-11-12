@@ -301,8 +301,11 @@ function drawLeft(d) {
   ctx.fillStyle = "#222";
   ctx.fillRect(bx - 60, by - 10, 120, 20);
   
+  // The bubble rises to the HIGH side: a clockwise cant (cant > 0, as drawn by
+  // ctx.rotate) lowers the right side, so the bubble moves left. Until
+  // 2026-11-12 it moved toward the low side, the opposite of a spirit level.
   ctx.beginPath();
-  ctx.arc(bx + Math.sin(cant)*40, by, 6, 0, Math.PI*2);
+  ctx.arc(bx - Math.sin(cant)*40, by, 6, 0, Math.PI*2);
   ctx.fillStyle = "lime";
   ctx.fill();
   

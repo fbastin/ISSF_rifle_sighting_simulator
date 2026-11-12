@@ -139,8 +139,8 @@ final impact is composed, by subtraction.
 
 1. In 10 m mode, press **X** several times to introduce a
         clockwise cant.  Observe the red dot shift right and slightly
-        down on the right panel, and the spirit-level indicator move
-        in the left panel.
+        down on the right panel, and the bubble of the spirit level move
+        left, to the high side, in the left panel.
 2. Press **T** to switch to 50 m and repeat.  The same cant
         angle produces a lateral shift seven times larger, because
         $h_g$ is seven times larger.
