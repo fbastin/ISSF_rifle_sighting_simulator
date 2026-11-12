@@ -2,51 +2,78 @@
 
 ## The Issue for Competitive Shooters
 
-*Canting* is the rotation of the rifle about the bore axis—a
-tilt to the left or right as viewed from behind.  Because the barrel
-must be angled *upward* to compensate for gravity
-(*Exterior Ballistics: Gravity and Trajectory*), any tilt rotates this vertical compensation
-vector out of the vertical plane.  The result is a point-of-impact
-error that has *both* a lateral and a vertical component—the
-“canting paradox” [rinker,mann].
-
+*Canting* is a tilt of the rifle to the left or right as viewed
+from behind.  The shooter keeps the sights on the aiming mark while
+doing so, so the rifle turns about the *line of sight*.  Because
+the barrel is angled *upward* to compensate for gravity
+(*Exterior Ballistics: Gravity and Trajectory*), the straight extension of the bore crosses
+the target plane $h_g$ above the point of aim; any tilt turns this
+offset out of the vertical plane, while gravity keeps pulling the
+bullet straight down.  The result is a point-of-impact error that has
+*both* a lateral and a vertical component—the “canting
+paradox”[rinker].
 
 ## Why It Matters
 
 Even small cant angles produce measurable errors, especially at
-longer distances where the total compensation $C = H + h_g$ is
-large.  At 50 m, a 2$^\circ$ cant shifts the impact laterally by
-$\approx$ 6 mm—more than a full scoring ring.  Because the rifle
+longer distances where the drop $h_g$ is large.  At 50 m, a
+2$^\circ$ cant shifts the impact laterally by ≈ 3.9 mm,
+about half the distance between two rings of the 50 m target
+(8 mm); at 10 m the same cant costs 0.56 mm, about a fifth of the
+2.5 mm between rings of the air-rifle target.  Because the rifle
 appears “almost level” to the shooter, canting errors are easy to
 introduce and difficult to detect without a spirit level.  The impact
 **always drops** and shifts **toward the direction of
-the cant** [nra,rinker].
-
+the cant**[nra,rinker].
 
 ## Physical Explanation and Illustration
 
-
-> **Figure.** The canting paradox.  When the rifle is tilted by $\theta$,
-the compensation vector $C$ rotates, producing a lateral error
-$\Delta x = C\sin\theta$ and a vertical loss
-$\Delta y = C(1-\cos\theta)$.
-
+<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_4.svg" alt="The canting paradox, seen from behind along the line of
+sight.  The straight extension of the bore crosses the target plane
+$h_g$ above the point of aim; tilting the rifle by $\theta$ about the
+line of sight turns this offset, while gravity still lowers the bullet
+by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$,
+vertical loss $\Delta y = h_g(1-\cos\theta)$." style="max-width:100%"><br><em><strong>Figure.</strong> The canting paradox, seen from behind along the line of
+sight.  The straight extension of the bore crosses the target plane
+$h_g$ above the point of aim; tilting the rifle by $\theta$ about the
+line of sight turns this offset, while gravity still lowers the bullet
+by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$,
+vertical loss $\Delta y = h_g(1-\cos\theta)$.</em></div>
 
 ## Mathematical Model
 
-When the rifle is level, the bore-to-sight compensation vector is
-purely vertical: $(0, C)$.  When the rifle is canted by angle
-$\theta$, this vector rotates to $(C\sin\theta, C\cos\theta)$.
-The errors on the target, relative to the uncanted aim point,
-are [rinker,mann]:
+Work in the rifle's own frame, on the target plane, with the point of
+aim at the origin.  The bore starts $H$ below the line of sight and
+rises $H + h_g$ over the distance (*Exterior Ballistics: Gravity and Trajectory*), so its
+straight extension crosses the target plane at
 
 $$
-\begin{aligned}\Delta x &= C\,\sin\theta \,,          % \label{eq:cant-x}\\
-  \Delta y &= C\,(1 - \cos\theta) \,,    % \label{eq:cant-y}\end{aligned}
+\mathbf{c} = (c_x, c_y) = (k_x, h_g + k_y) ,
+$$
+
+where $(k_x, k_y)$ is the correction set with the rear-sight clicks
+(*Mechanical Sight Adjustment (Clicks)*).  The sight height has cancelled:
+$-H + (H + h_g) = h_g$.  Canting turns everything fixed to the
+rifle—the offset $\mathbf{c}$ included—by $\theta$ about the line
+of sight; gravity, fixed in space, then lowers the bullet by $h_g$.
+The impact relative to the point of aim ($+y$ up, $\theta > 0$
+clockwise as seen by the shooter) is
+
+$$
+\begin{aligned}X &= c_x\cos\theta + c_y\sin\theta ,\\
+  Y &= -c_x\sin\theta + c_y\cos\theta - h_g .\end{aligned}
+$$
+
+With the clicks at zero, $\mathbf{c} = (0, h_g)$ and the errors
+reduce to
+
+$$
+\begin{aligned}\Delta x &= h_g \sin\theta  ,          \\
+  \Delta y &= h_g (1 - \cos\theta)  ,\end{aligned}
 $$
 
 where $\Delta x$ is the lateral shift (positive in the direction of
-the cant) and $\Delta y$ is the vertical drop (always
+the cant) and $\Delta y$ is the vertical loss (always
 positive—impact always falls).
 
 For small angles ($\theta \ll 1$), the approximations
@@ -56,48 +83,70 @@ while the vertical drop is second-order.  This explains the
 well-known observation that cant primarily causes horizontal
 dispersion at small angles.
 
+### Sight Height
+
+The sight height $H$ does not appear in *Rifle Cant*.
+Canting does turn the bore's upward angle $(H + h_g)/d$ sideways,
+which alone would move the bullet by $(H + h_g)\sin\theta$ at the
+target; but the same rotation about the line of sight moves the
+muzzle, which sits $H$ below that line, sideways by $H\sin\theta$ the
+other way, and the two terms in $H$ cancel.  The rule of thumb used at
+long range—multiply the total elevation, zero included, by
+$\sin\theta$ ([litz], pp. 146–147)—ignores the muzzle's move and
+overstates the error by $H\sin\theta$.  At several hundred metres,
+where the drop is counted in metres, this is negligible; at 10 m,
+where $H = 60$ mm is close to four times $h_g = 16.0$ mm, it would
+make the error 4.7 times too large.
+
+The cancellation is exact at the zeroing distance, the only distance
+the simulator models.  At another distance $r$, the straight bore line
+crosses the target plane $h_g(d) r/d - H (1 - r/d)$ above the point
+of aim, and $H$ reappears.
 
 ### Numerical Example
 
-At 50 m ($C = 60 + 112.6 = 172.6$ mm), a cant of
+At 50 m ($h_g = 112.6$ mm), a cant of
 $\theta = 2^\circ$ ($0.0349$ rad):
 
 $$
-\begin{aligned}\Delta x &= 172.6 \times \sin(0.0349) = 6.0\;\text{mm}\,,\\
-  \Delta y &= 172.6 \times (1 - \cos(0.0349)) = 0.1\;\text{mm}\,.\end{aligned}
+\begin{aligned}\Delta x &= 112.6 \times \sin(0.0349) = 3.9 \text{mm} ,\\
+  \Delta y &= 112.6 \times (1 - \cos(0.0349)) = 0.07 \text{mm} .\end{aligned}
 $$
 
-The horizontal shift is 60$\times$ larger than the vertical drop,
-consistent with competitive experience.
-
+At 10 m ($h_g = 16.0$ mm), the same cant gives $\Delta x = 0.56$ mm
+and $\Delta y = 0.01$ mm.  The horizontal shift is 57× larger
+than the vertical drop, consistent with competitive experience.
 
 ## Implementation
 
-In `simulator.js`, lines 91–93 of `compute()`.  The cant
-errors are computed in **canvas coordinates** where $+y$ points
-downward, so a positive `shiftY_mm` moves the impact
-downward on screen (i.e., the impact drops, as expected physically):
+In `simulator.js`, `compute()` evaluates
+*eq:cant-X* and *eq:cant-Y* in millimetres, $+y$ up:
 
-```javascript
-const totalComp_mm = sightHeight_mm + gravityDrop_mm;
-const shiftX_mm = totalComp_mm * Math.sin(cant);
-const shiftY_mm = totalComp_mm * (1 - Math.cos(cant));
-```
+“`javascript
+const gunX_mm = clickCountX * clickShift_mm;
+const gunY_mm = clickCountY * clickShift_mm + gravityDrop_mm;
+const cosCant = Math.cos(cant), sinCant = Math.sin(cant);
+const rifleX_mm =  gunX_mm * cosCant + gunY_mm * sinCant;
+const rifleY_mm = -gunX_mm * sinCant + gunY_mm * cosCant - gravityDrop_mm;
+“`
 
-
-**Note on coordinate convention.**
-In a standard mathematical frame ($+y$ up), the vertical error is
-$C(\cos\theta - 1) \leq 0$ (negative means downward).  In the HTML5
-Canvas frame ($+y$ down), the same physical drop corresponds to a
-*positive* pixel offset.
-*Rifle Cant* is expressed in the canvas convention used by the
-implementation: $\Delta y = C(1-\cos\theta) \geq 0$.
-
+A positive `cant` is the clockwise rotation that
+`ctx.rotate(cant)` draws in the sight picture.  The vertical
+impact is converted to canvas coordinates ($+y$ down) only when the
+final impact is composed, by subtraction.
 
 ## Simulator Exercises
 
-
-1. In 10 m mode, press **X** several times to introduce a clockwise cant. Observe the red dot shift right and slightly down on the right panel, and the spirit-level indicator move in the left panel.
-2. Press **T** to switch to 50 m and repeat. The same cant angle produces a much larger lateral shift because $C$ is larger.
-3. Increase sight height with **W** and note how this amplifies the cant error (larger $C$ in *Rifle Cant*).
-4. Use the arrow keys to zero-out the cant error with clicks (*Mechanical Sight Adjustment (Clicks)*), then remove the cant with **Z**. The impact now moves to the opposite side—demonstrating why zeroing under a cant and then removing it doubles the error.
+1. In 10 m mode, press **X** several times to introduce a
+        clockwise cant.  Observe the red dot shift right and slightly
+        down on the right panel, and the spirit-level indicator move
+        in the left panel.
+2. Press **T** to switch to 50 m and repeat.  The same cant
+        angle produces a lateral shift seven times larger, because
+        $h_g$ is seven times larger.
+3. With the rifle canted, change the sight height with
+        **W**/**S**: the impact does not move.
+4. Use the arrow keys to bring the impact back to the centre with
+        clicks (*Mechanical Sight Adjustment (Clicks)*), then remove the cant with **Z**.
+        The impact now moves to the opposite side: a correction set
+        under a cant holds only at that same cant.

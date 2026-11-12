@@ -229,8 +229,8 @@ Arrow keys            & Rear-sight clicks $\pm 1$
   \item Move the mouse across the left panel and observe both the sight picture
         shift and the cyan circle moving on the right panel.  This is
         \emph{parallax} (\cref{sec:parallax}).
-  \item Press \key{Z} several times to cant the rifle.  Watch the
-        spirit level and the red impact dot on the right panel shift
+  \item Press \key{X} several times to cant the rifle clockwise.  Watch
+        the spirit level and the red impact dot on the right panel shift
         right \emph{and} down (\cref{sec:cant}).
   \item Use the arrow keys to bring the red dot back to center---these
         are sight ``clicks'' (\cref{sec:clicks}).
@@ -493,11 +493,13 @@ from bore center to the optical axis of the sights) and the
 \emph{gravity drop} at the target distance.
 
 \subsection{Why It Matters}
-The total vertical compensation $C = H + h_g$ is the foundation on
-which canting error is built (\cref{sec:cant}).  At 50\,m, gravity
-drop is an order of magnitude larger than at 10\,m, explaining why
-canting and wind errors become far more severe in smallbore
-competition.  Understanding the relationship between sight height,
+The bore starts $H$ below the line of sight and rises $H + h_g$ over
+the distance, so its straight extension crosses the target plane
+$h_g$ \emph{above} the point of aim: gravity then brings the bullet
+down onto it.  This offset $h_g$---not $H + h_g$---is what canting
+turns sideways (\cref{sec:cant}).  At 50\,m, gravity drop is seven
+times larger than at 10\,m, which is why canting errors are far more
+severe in smallbore competition.  Understanding the relationship between sight height,
 muzzle velocity, and gravity drop helps athletes interpret their
 equipment choices~\cite{litz,pejsa}.
 
@@ -507,34 +509,36 @@ equipment choices~\cite{litz,pejsa}.
 \centering
 \begin{tikzpicture}[scale=0.9, >=Stealth]
   % Axes
-  \draw[->] (0,0) -- (11,0) node[right] {distance};
-  \draw[->] (0,-1.5) -- (0,2.5) node[above] {};
+  \draw[->] (0,0) -- (11.3,0) node[right] {distance};
+  \draw[->] (0,-0.3) -- (0,2.8) node[above] {};
   % Sight line
-  \draw[gray, thick] (0,1.5) -- (10,1.5) node[right,font=\small] {Sight line};
-  % Bore line (angled up)
-  \draw[dashed, blue] (0,0) -- (10,1.5);
-  \node[blue,font=\small,right] at (10.0,1.1) {};
-  % Bullet path (parabola, starts at bore, curves down)
+  \draw[gray, thick] (0,1.5) -- (10,1.5);
+  \node[gray,font=\small,above] at (3.2,1.5) {Sight line};
+  % Bore line: its straight extension passes h_g above the point of aim
+  \draw[dashed, blue] (0,0) -- (10,2.3);
+  \node[blue,font=\small,above left] at (7.6,1.75) {Bore line};
+  % Bullet path: leaves along the bore, ends h_g below the bore line
   \draw[red, thick, domain=0:10, samples=50]
-    plot (\x, {0 + 0.15*\x + 0*\x - 0.015*\x*\x});
-  \node[red,font=\small,right] at (10.2,0) {Bullet path};
+    plot (\x, {0.23*\x - 0.008*\x*\x});
+  \node[red,font=\small,below right] at (5.5,0.95) {Bullet path};
   % Sight height
   \draw[<->,thick] (-0.4,0) -- (-0.4,1.5)
     node[midway,left,font=\small] {$H$};
-  % Gravity drop at target
-  \draw[<->,thick] (10.4,0) -- (10.4,1.5);
-  \node[font=\small,right] at (10.5,0.75) {$H + h_g$};
+  % Rise of the bore over the distance
+  \draw[<->,thick] (10.6,0) -- (10.6,2.3)
+    node[midway,right,font=\small] {$H + h_g$};
+  % Gravity drop at the target
+  \draw[<->,thick,red] (10.25,1.5) -- (10.25,2.3);
+  \node[red,font=\small,right] at (10.2,2.6) {$h_g$};
   % Labels
   \filldraw (0,0) circle (1.5pt) node[below left,font=\small] {Bore};
   \filldraw (0,1.5) circle (1.5pt) node[above left,font=\small] {Sight};
-  \filldraw (10,1.5) circle (1.5pt) node[above,font=\small] {Target};
-  % Drop annotation
-  \draw[<->,thick,red] (8,-0.5) -- (8,1.5);
-  \node[red,font=\scriptsize,right] at (8.1,0.5) {Drop};
+  \filldraw (10,1.5) circle (1.5pt) node[below left,font=\small] {Target};
 \end{tikzpicture}
-\caption{Sight height and gravity drop.  The bore is angled upward by
-the combined compensation $C = H + h_g$ so that the parabolic bullet
-path intersects the line of sight at the target distance.}
+\caption{Sight height and gravity drop.  The bore, $H$ below the line
+of sight, rises by $H + h_g$ over the distance: its straight extension
+crosses the target plane $h_g$ above the point of aim, and gravity
+brings the bullet down by $h_g$ onto it.}
 \label{fig:trajectory}
 \end{figure}
 
@@ -548,11 +552,12 @@ The vertical drop due to gravity during this time is~\cite{mccoy}:
 \begin{equation}\label{eq:drop}
   h_g = \frac{1}{2}\,g\,t^2 = \frac{g\,d^2}{2\,v^2}\,.
 \end{equation}
-The total vertical compensation required at the target is:
+Over the distance $d$ the bore must rise by
 \begin{equation}\label{eq:totalcomp}
-  C = H + h_g\,,
+  H + h_g\,,
 \end{equation}
-where $H$ is the sight height.  Typical values used in the simulator:
+where $H$ is the sight height: $H$ to reach the line of sight, $h_g$
+to make up for the drop.  Typical values used in the simulator:
 
 \begin{table}[H]
 \centering\small
@@ -569,27 +574,27 @@ where $H$ is the sight height.  Typical values used in the simulator:
 \end{table}
 
 \subsection{Implementation}
-In \file{simulator.js}, lines~85--88 of \code{compute()}:
+In \file{simulator.js}, \code{compute()}:
 \begin{lstlisting}
 const dist_m = targetType === "10m" ? 10 : 50;
 const velocity_ms = targetType === "10m" ? 175.0 : 330.0;
 const time_s = dist_m / velocity_ms;
 const gravityDrop_mm = 0.5 * GRAVITY * (time_s * time_s) * 1000;
 \end{lstlisting}
-The factor of 1000 converts from metres to millimetres.  The total
-compensation $C$ is formed on line~91:
-\begin{lstlisting}
-const totalComp_mm = sightHeight_mm + gravityDrop_mm;
-\end{lstlisting}
+The factor of 1000 converts from metres to millimetres.  The sight
+height does not enter the computation of the impact: at the zeroing
+distance it cancels (\cref{sec:cant}), and \code{sightHeight\_mm}
+only sets the drawing of the barrel in the sight picture.
 
 \subsection{Simulator Exercises}
 \begin{enumerate}[nosep]
   \item In 10\,m mode, note the gravity drop displayed in the HUD
         ($\approx$16\,mm).  Press \key{T} to switch to 50\,m and
         observe the drop increase to $\approx$113\,mm.
-  \item Use \key{W}/\key{S} to raise or lower the sight height.
-        Observe in \cref{sec:cant} how this changes the sensitivity
-        to canting error.
+  \item Cant the rifle, then use \key{W}/\key{S} to raise or lower
+        the sight height.  The impact does not move: at the zeroing
+        distance the cant error does not depend on the sight height
+        (\cref{sec:cant}).
 \end{enumerate}
 
 
@@ -598,19 +603,24 @@ const totalComp_mm = sightHeight_mm + gravityDrop_mm;
 % ══════════════════════════════════════════════════════════════════════
 
 \subsection{The Issue for Competitive Shooters}
-\emph{Canting} is the rotation of the rifle about the bore axis---a
-tilt to the left or right as viewed from behind.  Because the barrel
-must be angled \emph{upward} to compensate for gravity
-(\cref{sec:ballistics}), any tilt rotates this vertical compensation
-vector out of the vertical plane.  The result is a point-of-impact
-error that has \emph{both} a lateral and a vertical component---the
-``canting paradox''~\cite{rinker,mann}.
+\emph{Canting} is a tilt of the rifle to the left or right as viewed
+from behind.  The shooter keeps the sights on the aiming mark while
+doing so, so the rifle turns about the \emph{line of sight}.  Because
+the barrel is angled \emph{upward} to compensate for gravity
+(\cref{sec:ballistics}), the straight extension of the bore crosses
+the target plane $h_g$ above the point of aim; any tilt turns this
+offset out of the vertical plane, while gravity keeps pulling the
+bullet straight down.  The result is a point-of-impact error that has
+\emph{both} a lateral and a vertical component---the ``canting
+paradox''~\cite{rinker}.
 
 \subsection{Why It Matters}
 Even small cant angles produce measurable errors, especially at
-longer distances where the total compensation $C = H + h_g$ is
-large.  At 50\,m, a 2$^\circ$ cant shifts the impact laterally by
-$\approx$\,6\,mm---more than a full scoring ring.  Because the rifle
+longer distances where the drop $h_g$ is large.  At 50\,m, a
+2$^\circ$ cant shifts the impact laterally by $\approx$\,3.9\,mm,
+about half the distance between two rings of the 50\,m target
+(8\,mm); at 10\,m the same cant costs 0.56\,mm, about a fifth of the
+2.5\,mm between rings of the air-rifle target.  Because the rifle
 appears ``almost level'' to the shooter, canting errors are easy to
 introduce and difficult to detect without a spirit level.  The impact
 \textbf{always drops} and shifts \textbf{toward the direction of
@@ -621,21 +631,21 @@ the cant}~\cite{nra,rinker}.
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=1.0, >=Stealth]
-  % Rifle circle
+  % Target plane, seen from behind; centre = point of aim
   \draw[thick, gray] (0,0) circle (2.2);
-  \node[gray,font=\scriptsize] at (0,-2.7) {Rifle cross-section};
+  \node[gray,font=\scriptsize] at (0,-2.7) {Target plane seen from behind (centre: point of aim)};
+  \fill (0,0) circle (1.5pt);
 
-  % Uncanted compensation vector
+  % Bore-line offset, rifle level
   \draw[very thick, blue, ->] (0,0) -- (0,2.0)
-    node[above,font=\small,black] {$C$ (level)};
+    node[above left,font=\small,black] {$h_g$ (level)};
 
-  % Canted compensation vector (20 degrees for visibility)
+  % Bore-line offset, rifle canted (20 degrees for visibility)
   \draw[very thick, red, ->] (0,0) -- ({2.0*sin(20)},{2.0*cos(20)})
-    node[above right,font=\small,black] {$C$ (canted)};
+    node[above right,font=\small,black] {$h_g$ (canted)};
 
   % Decomposition
-  \draw[dashed, red, thick] ({2.0*sin(20)},{2.0*cos(20)}) -- ({2.0*sin(20)},0)
-    node[below,font=\scriptsize] {$C\sin\theta$};
+  \draw[dashed, red, thick] ({2.0*sin(20)},{2.0*cos(20)}) -- ({2.0*sin(20)},0);
   \draw[dashed, red, thick] ({2.0*sin(20)},{2.0*cos(20)}) -- (0,{2.0*cos(20)});
 
   % Vertical loss
@@ -648,27 +658,44 @@ the cant}~\cite{nra,rinker}.
 
   % Horizontal error
   \draw[<->,thick,green!50!black] (0,-0.35) -- ({2.0*sin(20)},-0.35);
-  \node[green!50!black,font=\scriptsize,below] at ({1.0*sin(20)},-0.35) {$\Delta x$};
+  \node[green!50!black,font=\scriptsize,below] at ({1.0*sin(20)},-0.35) {$\Delta x = h_g\sin\theta$};
 \end{tikzpicture}
-\caption{The canting paradox.  When the rifle is tilted by $\theta$,
-the compensation vector~$C$ rotates, producing a lateral error
-$\Delta x = C\sin\theta$ and a vertical loss
-$\Delta y = C(1-\cos\theta)$.}
+\caption{The canting paradox, seen from behind along the line of
+sight.  The straight extension of the bore crosses the target plane
+$h_g$ above the point of aim; tilting the rifle by $\theta$ about the
+line of sight turns this offset, while gravity still lowers the bullet
+by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$,
+vertical loss $\Delta y = h_g(1-\cos\theta)$.}
 \label{fig:cant}
 \end{figure}
 
 \subsection{Mathematical Model}
-When the rifle is level, the bore-to-sight compensation vector is
-purely vertical: $(0,\,C)$.  When the rifle is canted by angle
-$\theta$, this vector rotates to $(C\sin\theta,\;C\cos\theta)$.
-The errors on the target, relative to the uncanted aim point,
-are~\cite{rinker,mann}:
+Work in the rifle's own frame, on the target plane, with the point of
+aim at the origin.  The bore starts $H$ below the line of sight and
+rises $H + h_g$ over the distance (\cref{fig:trajectory}), so its
+straight extension crosses the target plane at
+\begin{equation}\label{eq:cant-offset}
+  \mathbf{c} = (c_x,\;c_y) = (k_x,\;h_g + k_y)\,,
+\end{equation}
+where $(k_x, k_y)$ is the correction set with the rear-sight clicks
+(\cref{sec:clicks}).  The sight height has cancelled:
+$-H + (H + h_g) = h_g$.  Canting turns everything fixed to the
+rifle---the offset $\mathbf{c}$ included---by $\theta$ about the line
+of sight; gravity, fixed in space, then lowers the bullet by $h_g$.
+The impact relative to the point of aim ($+y$ up, $\theta > 0$
+clockwise as seen by the shooter) is
 \begin{align}
-  \Delta x &= C\,\sin\theta \,,          \label{eq:cant-x}\\
-  \Delta y &= C\,(1 - \cos\theta) \,,    \label{eq:cant-y}
+  X &= c_x\cos\theta + c_y\sin\theta\,,\label{eq:cant-X}\\
+  Y &= -c_x\sin\theta + c_y\cos\theta - h_g\,.\label{eq:cant-Y}
+\end{align}
+With the clicks at zero, $\mathbf{c} = (0,\,h_g)$ and the errors
+reduce to
+\begin{align}
+  \Delta x &= h_g\,\sin\theta \,,          \label{eq:cant-x}\\
+  \Delta y &= h_g\,(1 - \cos\theta) \,,    \label{eq:cant-y}
 \end{align}
 where $\Delta x$ is the lateral shift (positive in the direction of
-the cant) and $\Delta y$ is the vertical drop (always
+the cant) and $\Delta y$ is the vertical loss (always
 positive---impact always falls).
 
 For small angles ($\theta \ll 1$), the approximations
@@ -678,34 +705,50 @@ while the vertical drop is second-order.  This explains the
 well-known observation that cant primarily causes horizontal
 dispersion at small angles.
 
+\subsubsection*{Sight Height}
+The sight height $H$ does not appear in \cref{eq:cant-x,eq:cant-y}.
+Canting does turn the bore's upward angle $(H + h_g)/d$ sideways,
+which alone would move the bullet by $(H + h_g)\sin\theta$ at the
+target; but the same rotation about the line of sight moves the
+muzzle, which sits $H$ below that line, sideways by $H\sin\theta$ the
+other way, and the two terms in $H$ cancel.  The rule of thumb used at
+long range---multiply the total elevation, zero included, by
+$\sin\theta$ (\cite{litz}, pp.~146--147)---ignores the muzzle's move and
+overstates the error by $H\sin\theta$.  At several hundred metres,
+where the drop is counted in metres, this is negligible; at 10\,m,
+where $H = 60$\,mm is close to four times $h_g = 16.0$\,mm, it would
+make the error 4.7 times too large.
+
+The cancellation is exact at the zeroing distance, the only distance
+the simulator models.  At another distance $r$, the straight bore line
+crosses the target plane $h_g(d)\,r/d - H\,(1 - r/d)$ above the point
+of aim, and $H$ reappears.
+
 \subsubsection*{Numerical Example}
-At 50\,m ($C = 60 + 112.6 = 172.6$\,mm), a cant of
+At 50\,m ($h_g = 112.6$\,mm), a cant of
 $\theta = 2^\circ$ ($0.0349$\,rad):
 \begin{align*}
-  \Delta x &= 172.6 \times \sin(0.0349) = 6.0\;\text{mm}\,,\\
-  \Delta y &= 172.6 \times (1 - \cos(0.0349)) = 0.1\;\text{mm}\,.
+  \Delta x &= 112.6 \times \sin(0.0349) = 3.9\;\text{mm}\,,\\
+  \Delta y &= 112.6 \times (1 - \cos(0.0349)) = 0.07\;\text{mm}\,.
 \end{align*}
-The horizontal shift is 60$\times$ larger than the vertical drop,
-consistent with competitive experience.
+At 10\,m ($h_g = 16.0$\,mm), the same cant gives $\Delta x = 0.56$\,mm
+and $\Delta y = 0.01$\,mm.  The horizontal shift is 57$\times$ larger
+than the vertical drop, consistent with competitive experience.
 
 \subsection{Implementation}\label{sec:cant-impl}
-In \file{simulator.js}, lines~91--93 of \code{compute()}.  The cant
-errors are computed in \textbf{canvas coordinates} where $+y$~points
-downward, so a positive \code{shiftY\_mm} moves the impact
-downward on screen (i.e., the impact drops, as expected physically):
+In \file{simulator.js}, \code{compute()} evaluates
+\cref{eq:cant-X,eq:cant-Y} in millimetres, $+y$ up:
 \begin{lstlisting}
-const totalComp_mm = sightHeight_mm + gravityDrop_mm;
-const shiftX_mm = totalComp_mm * Math.sin(cant);
-const shiftY_mm = totalComp_mm * (1 - Math.cos(cant));
+const gunX_mm = clickCountX * clickShift_mm;
+const gunY_mm = clickCountY * clickShift_mm + gravityDrop_mm;
+const cosCant = Math.cos(cant), sinCant = Math.sin(cant);
+const rifleX_mm =  gunX_mm * cosCant + gunY_mm * sinCant;
+const rifleY_mm = -gunX_mm * sinCant + gunY_mm * cosCant - gravityDrop_mm;
 \end{lstlisting}
-
-\noindent\textbf{Note on coordinate convention.}
-In a standard mathematical frame ($+y$ up), the vertical error is
-$C(\cos\theta - 1) \leq 0$ (negative means downward).  In the HTML5
-Canvas frame ($+y$ down), the same physical drop corresponds to a
-\emph{positive} pixel offset.
-\Cref{eq:cant-y} is expressed in the canvas convention used by the
-implementation: $\Delta y = C(1-\cos\theta) \geq 0$.
+A positive \code{cant} is the clockwise rotation that
+\code{ctx.rotate(cant)} draws in the sight picture.  The vertical
+impact is converted to canvas coordinates ($+y$ down) only when the
+final impact is composed, by subtraction.
 
 \subsection{Simulator Exercises}
 \begin{enumerate}[nosep]
@@ -714,15 +757,14 @@ implementation: $\Delta y = C(1-\cos\theta) \geq 0$.
         down on the right panel, and the spirit-level indicator move
         in the left panel.
   \item Press \key{T} to switch to 50\,m and repeat.  The same cant
-        angle produces a much larger lateral shift because $C$ is
-        larger.
-  \item Increase sight height with \key{W} and note how this
-        amplifies the cant error (larger $C$ in
-        \cref{eq:cant-x,eq:cant-y}).
-  \item Use the arrow keys to zero-out the cant error with clicks
-        (\cref{sec:clicks}), then remove the cant with \key{Z}.  The
-        impact now moves to the opposite side---demonstrating why
-        zeroing under a cant and then removing it doubles the error.
+        angle produces a lateral shift seven times larger, because
+        $h_g$ is seven times larger.
+  \item With the rifle canted, change the sight height with
+        \key{W}/\key{S}: the impact does not move.
+  \item Use the arrow keys to bring the impact back to the centre with
+        clicks (\cref{sec:clicks}), then remove the cant with \key{Z}.
+        The impact now moves to the opposite side: a correction set
+        under a cant holds only at that same cant.
 \end{enumerate}
 
 
@@ -943,7 +985,7 @@ impact.  A headwind ($\alpha = 180^\circ$) has the opposite
 effect~\cite{litz}.
 
 \subsection{Implementation}
-In \file{simulator.js}, lines~97--100:
+In \file{simulator.js}, \code{compute()}:
 \begin{lstlisting}
 const windFactor = targetType === "10m" ? 1.2 : 10.5;
 const windDriftX_mm = windSpeed_ms * windFactor
@@ -951,13 +993,13 @@ const windDriftX_mm = windSpeed_ms * windFactor
 const windDriftY_mm = windSpeed_ms * (windFactor * 0.2)
                       * Math.cos(windDir_rad);
 \end{lstlisting}
-In the final impact computation (line~107), \code{windDriftY\_mm} is
-\emph{subtracted} because it is computed in mathematical coordinates
-($+y$ up) while the Canvas uses $+y$ down:
+The wind drift is added to the cant result (\cref{sec:cant-impl}),
+both in mathematical coordinates ($+y$ up); the sum is
+\emph{subtracted} from the canvas ordinate, which grows downward:
 \begin{lstlisting}
-finalY: cy + py + ty
-      + (shiftY_mm * PX_PER_MM)
-      - (windDriftY_mm * PX_PER_MM)
+const impactX_mm = rifleX_mm + windDriftX_mm;
+const impactY_mm = rifleY_mm + windDriftY_mm;
+finalY: cy + py - impactY_mm * PX_PER_MM
 \end{lstlisting}
 
 \subsection{Simulator Exercises}
@@ -1039,7 +1081,7 @@ quantities must be negated.  The key sign conventions in
 \toprule
 \textbf{Quantity} & \textbf{Math frame} ($+y$ up) & \textbf{Canvas} ($+y$ down) \\
 \midrule
-Cant $\Delta y$ & $C(\cos\theta - 1) \leq 0$ & $C(1-\cos\theta) \geq 0$ \\
+Cant $Y$ (\cref{eq:cant-Y}), no clicks & $h_g(\cos\theta - 1) \leq 0$ & subtracted $\Rightarrow$ $+$ (down) \\
 Wind $\Delta Y$ (tailwind) & $>0$ (up) & subtracted $\Rightarrow$ $-$ (up) \\
 Parallax $p_y$ & opposite to $e_y$ & same formula (eye offset is in canvas coords) \\
 \bottomrule
@@ -1090,8 +1132,8 @@ Each animation frame (via \code{requestAnimationFrame}) executes:
 \section{Summary of Corrections Applied}\label{sec:errata}
 % ══════════════════════════════════════════════════════════════════════
 
-During the preparation of this document, two corrections were
-identified and applied to \file{simulator.js}:
+The following corrections were identified and applied to
+\file{simulator.js}:
 
 \begin{enumerate}
   \item \textbf{Cant vertical error sign (line~93).}
@@ -1110,6 +1152,16 @@ identified and applied to \file{simulator.js}:
     this as 10.0.  The corrected formula
     \code{Math.min(10.9, 11.0 - dist\_mm / 2.5)} aligns the ring
     boundaries with integer scores and caps the maximum at 10.9.
+
+  \item \textbf{Cant error and sight height (2026-11-12).}
+    The code and this document took the cant error as
+    $(H + h_g)\sin\theta$, the sight height added to the drop.  At the
+    zeroing distance the sight height cancels (\cref{sec:cant}): the
+    error is $h_g\sin\theta$.  The former value was 4.7 times too large
+    at 10\,m (2.7\,mm instead of 0.56\,mm for a 2$^\circ$ cant) and
+    1.5 times too large at 50\,m (6.0\,mm instead of 3.9\,mm).  The
+    cant now also turns the click correction, which is fixed to the
+    rifle.
 \end{enumerate}
 
 The backup file \file{simulator.best.js} retains the original code

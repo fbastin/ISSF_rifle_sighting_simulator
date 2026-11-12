@@ -147,13 +147,23 @@ function compute() {
   const gravityDrop_mm = 0.5 * GRAVITY * (time_s * time_s) * 1000;
 
   const clickShift_mm = (clickValue_cmm / 100) * (dist_m * 1000) / SIGHT_RADIUS_mm;
-  const tx =  clickCountX * clickShift_mm * PX_PER_MM;
-  const ty = -clickCountY * clickShift_mm * PX_PER_MM;   // canvas Y grows downward
 
-  // Cant Physics
-  const totalComp_mm = sightHeight_mm + gravityDrop_mm;
-  const shiftX_mm = totalComp_mm * Math.sin(cant);
-  const shiftY_mm = totalComp_mm * (1 - Math.cos(cant));
+  // Cant. Everything fixed to the rifle turns with it; gravity does not.
+  // In the rifle's own frame (mm, +y up), the straight extension of the bore
+  // crosses the target plane at (clicks_x, drop + clicks_y) from the point of
+  // aim: the bore starts sightHeight_mm below the line of sight and rises
+  // sightHeight_mm + drop over the distance, so the sight height cancels
+  // exactly at the zeroing distance. The shooter keeps the sights on the
+  // aiming mark, so the rifle turns about the line of sight: this offset is
+  // rotated by the cant (clockwise for cant > 0, as drawn by ctx.rotate),
+  // then gravity lowers the bullet by the drop in the true vertical.
+  // (Until 2026-11-12 the code took (sightHeight + drop)·sin(cant): 4.7 times
+  // too much at 10 m.)
+  const gunX_mm = clickCountX * clickShift_mm;
+  const gunY_mm = clickCountY * clickShift_mm + gravityDrop_mm;
+  const cosCant = Math.cos(cant), sinCant = Math.sin(cant);
+  const rifleX_mm =  gunX_mm * cosCant + gunY_mm * sinCant;
+  const rifleY_mm = -gunX_mm * sinCant + gunY_mm * cosCant - gravityDrop_mm;
 
   // NEW: Wind Deflection Physics
   // Wind factor: mm of drift per 1 m/s of crosswind
@@ -162,12 +172,16 @@ function compute() {
   // Head/tailwind has a minor effect on vertical impact compared to lateral crosswind
   const windDriftY_mm = windSpeed_ms * (windFactor * 0.2) * Math.cos(windDir_rad);
 
+  // Impact relative to the point of aim, mathematical frame (+y up).
+  const impactX_mm = rifleX_mm + windDriftX_mm;
+  const impactY_mm = rifleY_mm + windDriftY_mm;
+
   return {
     px: cx + px, py: cy + py,
     gravityDrop_mm: gravityDrop_mm,
-    finalX: cx + px + tx + ((shiftX_mm + windDriftX_mm) * PX_PER_MM),
-    // Subtract windDriftY because Canvas +Y is down, but mathematical +Y (up) should push impact UP
-    finalY: cy + py + ty + (shiftY_mm * PX_PER_MM) - (windDriftY_mm * PX_PER_MM) 
+    finalX: cx + px + impactX_mm * PX_PER_MM,
+    // Canvas +y points down: an impact above the aim (+y) is subtracted.
+    finalY: cy + py - impactY_mm * PX_PER_MM
   };
 }
 
