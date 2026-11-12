@@ -3,50 +3,66 @@
 ## ISSF Decimal Scoring
 
 In ISSF finals and electronic-target qualification, shots are scored
-to one decimal place.  The maximum score per shot is 10.9 (center),
-and each integer ring boundary corresponds to a `.0` score.
-For the 10 m air-rifle target, ring boundaries are spaced 2.5 mm
-apart in radius [issf].
+to one decimal place[issf].  A shot takes the highest zone that
+its hole touches; each ring is divided into ten equal zones numbered
+from `.0` to `.9`, so the value is truncated, not
+rounded, and the maximum is 10.9.
 
+## Target Faces
+
+The simulator draws and scores the two rifle faces of the ISSF
+General Technical Rules (2020, \S 6.3.4.2–6.3.4.3):
+
+<table>
+<caption><strong>Table.</strong> Rifle target faces used by the simulator.</caption>
+<tr><th><strong>Face</strong></th><th><strong>10 ring</strong></th><th><strong>Ring spacing</strong></th><th><strong>Black</strong></th><th><strong>Gauge</strong></th></tr>
+<tr><td></td><td>(diameter)</td><td>(radius)</td><td>(diameter)</td><td></td></tr>
+<tr><td>10 m air rifle</td><td>0.5 mm</td><td>2.5 mm</td><td>30.5 mm (rings 4–9)</td><td>4.5 mm</td></tr>
+<tr><td>50 m rifle</td><td>10.4 mm</td><td>8.0 mm</td><td>112.4 mm (part of 3 to 10)</td><td>5.6 mm</td></tr>
+</table>
 
 ## Mathematical Model
 
-The score is a linear function of radial distance $r$ (in mm) from
-the target center, capped at the maximum:
+A hole whose centre lies at the distance $r$ from the target centre
+touches ring $v$ when $r \leq r_v + b$, where $r_v$ is the radius of
+ring $v$ and $b$ the bullet radius.  On both rifle faces $r_{10} + b$
+equals the ring spacing $s$ ($0.25 + 2.25 = 2.5$ mm at 10 m,
+$5.2 + 2.8 = 8.0$ mm at 50 m), so the decimal score is
 
 $$
-% \label{eq:score}
-  S = \min\!\bigl(10.9,\;11.0 - \tfrac{r}{2.5}\bigr),
-  \qquad S \geq 0\,.
+S = \min \Bigl(10.9, \tfrac{1}{10}\bigl\lfloor 10 (11 - r/s)\bigr\rfloor\Bigr),
+  \qquad S = 0 \ \text{if}\ 11 - r/s < 1 .
 $$
 
+Key values (10 m / 50 m):
 
- Key values:
-
-- $r = 0$ mm: $S = 10.9$ (perfect center shot).
-- $r = 0.25$ mm (inner-10 / X-ring edge): $S = 10.9$.
-- $r = 2.5$ mm (10-ring edge): $S = 10.0$.
-- $r = 5.0$ mm (9-ring edge): $S = 9.0$.
-- $r \geq 27.5$ mm: $S = 0$ (off target).
-
+- $r = 0$: $S = 10.9$.
+- $r = s$ (2.5 / 8 mm): $S = 10.0$, the hole touching the 10 ring.
+- $r = 2s$ (5 / 16 mm): $S = 9.0$.
+- $r > 10s$ (25 / 80 mm): $S = 0$, the hole missing ring 1.
 
 ## Implementation
 
-In `simulator.js`, lines 111–113:
+In `simulator.js`, `computeScore()` takes the impact in
+millimetres from the target centre and applies the general rule—the
+10 zone split over $r_{10} + b$, the others over $s$—which reduces to
+*Scoring Model* on these two faces:
 
-```javascript
-function computeScore(x, y) {
-  const dist_mm = Math.hypot(x - cx, y - cy) / PX_PER_MM;
-  return Math.max(0, Math.min(10.9, 11.0 - (dist_mm / 2.5)));
+“`javascript
+function computeScore(x_mm, y_mm) {
+  const T = TARGETS[targetType];
+  const d = Math.hypot(x_mm, y_mm);
+  const EPS = 1e-9;
+  const R10 = T.ring10_r + T.bullet_r;
+  if (d <= R10) return 10 + Math.min(9, Math.floor(10 * (R10 - d) / R10 + EPS)) / 10;
+  const k = Math.ceil((d - R10) / T.spacing - EPS);    // rings beyond the 10
+  const v = 10 - k;
+  if (v < 1) return 0;
+  const Rv = R10 + k * T.spacing;
+  return v + Math.min(9, Math.floor(10 * (Rv - d) / T.spacing + EPS)) / 10;
 }
-```
+“`
 
-The computation uses the physics-space impact position (before the
-$1.2\times$ display magnification applied on the right panel), so
-the score reflects the true ballistic offset.
-
-**Note.** The scoring ring spacing of 2.5 mm matches
-the ISSF 10 m air-rifle target.  The 50 m smallbore target has
-a different ring geometry (approximately 4 mm radial spacing), but
-the simulator uses the same formula for both modes as a pedagogical
-simplification.
+The right panel draws the rings and the impact at the same scale,
+`TARGETS[targetType].pxPerMm`: 6 px/mm at 10 m and
+1.875 px/mm at 50 m, that is 15 px between rings on both faces.

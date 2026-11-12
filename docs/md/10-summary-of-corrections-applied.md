@@ -27,6 +27,20 @@ The following corrections were identified and applied to
     1.5 times too large at 50 m (6.0 mm instead of 3.9 mm).  The
     cant now also turns the click correction, which is fixed to the
     rifle.
+4. **50 m target (2026-11-12).**
+    The 50 m mode drew and scored the 10 m air-rifle face, 2.5 mm
+    between rings, with a note giving about 4 mm for the 50 m face;
+    it is 8 mm (*tab:faces*).  Clicks, wind and cant at 50 m
+    cost 3.2 times too many points.  Both faces now come from the
+    `TARGETS` table.
+5. **Display scale of the impact (2026-11-12).**
+    The right panel drew the impact 1.2 times farther from the centre
+    than the rings, so the red dot sat away from the ring its score gave
+    (a 6.0 on the line of the 4).  Rings and impact now share one scale.
+6. **Decimal truncation (2026-11-12).**
+    The score was rounded to one decimal (9.96 shown as 10.0); ISSF
+    zones run from `.0` to `.9`, so the value is now
+    truncated (9.9), and a shot outside ring 1 scores 0.
 
 The backup file `simulator.best.js` retains the original code
 for reference.

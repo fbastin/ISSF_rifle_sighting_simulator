@@ -37,6 +37,21 @@ const frontZ = 350;
 const targetZ = 480;
 const GRAVITY = 9.81;
 
+// --- ISSF TARGET FACES (General Technical Rules 2020, § 6.3.4.2-6.3.4.3), mm ---
+// ring10_r: radius of the 10 ring (the 0.5 mm dot of the air-rifle target);
+// spacing: radial distance between two rings; black_r: aiming mark;
+// innerTen_r: inner ten circle (none printed on the air-rifle target);
+// bullet_r: half the scoring gauge (4.5 mm pellet, 5.6 mm .22 LR);
+// pxPerMm: drawing scale of the right panel, 15 px between rings on both faces.
+// Until 2026-11-12 the 50 m mode drew and scored the 10 m face (2.5 mm between
+// rings instead of 8).
+const TARGETS = {
+  "10m": { dist_m: 10, velocity_ms: 175.0, ring10_r: 0.25, spacing: 2.5,
+           black_r: 15.25, innerTen_r: 0,   bullet_r: 2.25, pxPerMm: 6.0 },
+  "50m": { dist_m: 50, velocity_ms: 330.0, ring10_r: 5.2,  spacing: 8.0,
+           black_r: 56.2,  innerTen_r: 2.5, bullet_r: 2.8,  pxPerMm: 15 / 8 }
+};
+
 // --- REAR-SIGHT (DIOPTER) CLICKS ---
 // Impact shift per click: Delta = c * R / L  (see wiki page "La visée au dioptre")
 const SIGHT_RADIUS_mm = 800;   // diopter<->front-sight radius of a match rifle
@@ -141,8 +156,8 @@ function compute() {
   px *= f; py *= f;
 
   // Rear-sight (diopter) clicks: Delta = c * R / L
-  const dist_m = targetType === "10m" ? 10 : 50;
-  const velocity_ms = targetType === "10m" ? 175.0 : 330.0; 
+  const dist_m = TARGETS[targetType].dist_m;
+  const velocity_ms = TARGETS[targetType].velocity_ms;
   const time_s = dist_m / velocity_ms;
   const gravityDrop_mm = 0.5 * GRAVITY * (time_s * time_s) * 1000;
 
@@ -172,22 +187,40 @@ function compute() {
   // Head/tailwind has a minor effect on vertical impact compared to lateral crosswind
   const windDriftY_mm = windSpeed_ms * (windFactor * 0.2) * Math.cos(windDir_rad);
 
-  // Impact relative to the point of aim, mathematical frame (+y up).
-  const impactX_mm = rifleX_mm + windDriftX_mm;
-  const impactY_mm = rifleY_mm + windDriftY_mm;
+  // Parallax, from canvas pixels to mm on the target (+y up). The model itself
+  // is unchanged: PX_PER_MM was the scale at which it was added to the impact.
+  const parallaxX_mm =  px / PX_PER_MM;
+  const parallaxY_mm = -py / PX_PER_MM;
+
+  // Impact relative to the centre of the target, mathematical frame (+y up).
+  const impactX_mm = parallaxX_mm + rifleX_mm + windDriftX_mm;
+  const impactY_mm = parallaxY_mm + rifleY_mm + windDriftY_mm;
 
   return {
-    px: cx + px, py: cy + py,
+    parallaxX_mm: parallaxX_mm, parallaxY_mm: parallaxY_mm,
+    impactX_mm: impactX_mm, impactY_mm: impactY_mm,
     gravityDrop_mm: gravityDrop_mm,
-    finalX: cx + px + impactX_mm * PX_PER_MM,
-    // Canvas +y points down: an impact above the aim (+y) is subtracted.
-    finalY: cy + py - impactY_mm * PX_PER_MM
+    // Sight picture (left panel), canvas coordinates: +y points down.
+    finalX: cx + impactX_mm * PX_PER_MM,
+    finalY: cy - impactY_mm * PX_PER_MM
   };
 }
 
-function computeScore(x, y) {
-  const dist_mm = Math.hypot(x - cx, y - cy) / PX_PER_MM;
-  return Math.max(0, Math.min(10.9, 11.0 - (dist_mm / 2.5)));
+// ISSF decimal score (General Technical Rules 2020, § 5.2.1 and 6.3.3.1): a shot
+// takes the highest zone that its hole touches, so ring v is reached when the
+// centre of the hole is within ring radius + bullet radius; each ring is split
+// into ten equal zones numbered .0 to .9, and the value is truncated, not rounded.
+function computeScore(x_mm, y_mm) {
+  const T = TARGETS[targetType];
+  const d = Math.hypot(x_mm, y_mm);
+  const EPS = 1e-9;
+  const R10 = T.ring10_r + T.bullet_r;
+  if (d <= R10) return 10 + Math.min(9, Math.floor(10 * (R10 - d) / R10 + EPS)) / 10;
+  const k = Math.ceil((d - R10) / T.spacing - EPS);    // rings beyond the 10
+  const v = 10 - k;
+  if (v < 1) return 0;
+  const Rv = R10 + k * T.spacing;
+  return v + Math.min(9, Math.floor(10 * (Rv - d) / T.spacing + EPS)) / 10;
 }
 
 function drawLeft(d) {
@@ -284,53 +317,63 @@ function drawRight(d) {
   ctx.fillRect(o, 0, split, H_canvas - panelH);
   
   const tx = o + split/2;
-  const step = 15; 
-  
-  const blackAimingMarkRadius = targetType === "10m" ? 6 * step : 6.4 * step;
+  const T = TARGETS[targetType];
+  const s = T.pxPerMm;                                        // px per mm
+  const ringR = v => (T.ring10_r + (10 - v) * T.spacing) * s; // ring v, px
+
   ctx.beginPath();
-  ctx.arc(tx, cy, blackAimingMarkRadius, 0, Math.PI*2);
-  ctx.fillStyle = "#000"; 
+  ctx.arc(tx, cy, T.black_r * s, 0, Math.PI*2);
+  ctx.fillStyle = "#000";
   ctx.fill();
 
   ctx.textAlign="center";
   ctx.textBaseline="middle";
 
   for(let v=1; v<=9; v++){
-    let r = (10 - v) * step;
-    
+    const r = ringR(v);
+
     ctx.beginPath();
     ctx.arc(tx, cy, r, 0, Math.PI*2);
-    ctx.strokeStyle = (v >= 4) ? "#fff" : "#000"; 
+    ctx.strokeStyle = (v >= 4) ? "#fff" : "#000";
     ctx.lineWidth = 1;
     ctx.stroke();
 
     if (v <= 8) {
       ctx.fillStyle = (v >= 4) ? "#fff" : "#000";
       ctx.font = "12px Arial";
-      let offset = r - step/2; 
-      ctx.fillText(v, tx, cy - offset);      
-      ctx.fillText(v, tx, cy + offset);      
-      ctx.fillText(v, tx - offset, cy);      
-      ctx.fillText(v, tx + offset, cy);      
+      const offset = r - T.spacing * s / 2;
+      ctx.fillText(v, tx, cy - offset);
+      ctx.fillText(v, tx, cy + offset);
+      ctx.fillText(v, tx - offset, cy);
+      ctx.fillText(v, tx + offset, cy);
     }
   }
 
+  // 10 ring: the white 0.5 mm dot at 10 m; at 50 m a white circle, with the inner ten.
   ctx.beginPath();
-  ctx.arc(tx, cy, 1.5, 0, Math.PI*2);
-  ctx.fillStyle = "white";
-  ctx.fill();
+  ctx.arc(tx, cy, Math.max(1.5, T.ring10_r * s), 0, Math.PI*2);
+  if (T.innerTen_r > 0) {
+    ctx.strokeStyle = "white";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(tx, cy, T.innerTen_r * s, 0, Math.PI*2);
+    ctx.stroke();
+  } else {
+    ctx.fillStyle = "white";
+    ctx.fill();
+  }
 
-  const scale = 1.2;
-
+  // Aim and impact at the same scale as the rings (the impact used to be drawn
+  // 1.2 times too far out, away from the ring its score gave).
   ctx.beginPath();
-  ctx.arc(tx + (d.px - cx)*scale, cy + (d.py - cy)*scale, 6, 0, Math.PI*2);
+  ctx.arc(tx + d.parallaxX_mm * s, cy - d.parallaxY_mm * s, 6, 0, Math.PI*2);
   ctx.strokeStyle = "cyan";
   ctx.lineWidth = 2;
   ctx.stroke();
-  
+
   ctx.beginPath();
-  ctx.arc(tx + (d.finalX - cx)*scale, cy + (d.finalY - cy)*scale, 4, 0, Math.PI*2);
-  ctx.fillStyle = "red"; 
+  ctx.arc(tx + d.impactX_mm * s, cy - d.impactY_mm * s, 4, 0, Math.PI*2);
+  ctx.fillStyle = "red";
   ctx.fill();
 
   // NEW: Draw Wind Indicator (Clock/Arrow)
@@ -376,14 +419,14 @@ function drawPanel(d) {
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
   
-  const offsetX_mm = ((d.finalX - cx) / PX_PER_MM);
-  const offsetY_mm = (-(d.finalY - cy) / PX_PER_MM);
+  const offsetX_mm = d.impactX_mm;
+  const offsetY_mm = d.impactY_mm;
   const xStr = (offsetX_mm > 0 ? "+" : "") + offsetX_mm.toFixed(1);
   const yStr = (offsetY_mm > 0 ? "+" : "") + offsetY_mm.toFixed(1);
 
   const clickX = (clickCountX > 0 ? "+" : "") + clickCountX;
   const clickY = (clickCountY > 0 ? "+" : "") + clickCountY;
-  const clickDist_m = targetType === "10m" ? 10 : 50;
+  const clickDist_m = TARGETS[targetType].dist_m;
   const click_mm = Math.hypot(clickCountX, clickCountY) * (clickValue_cmm / 100)
                  * (clickDist_m * 1000) / SIGHT_RADIUS_mm;
 
@@ -395,7 +438,7 @@ function drawPanel(d) {
   // Row 1
   ctx.fillText(`${t("rear")}: ${rearAperture_mm.toFixed(1)}mm | ${t("front")}: ${frontIris_mm.toFixed(1)}mm | ${t("thick")}: ${frontThickness_mm.toFixed(1)}mm | ${t("relief")}: ${relief_mm}mm`, 10, H_canvas-65);
   ctx.fillText(`${t("target")}: ${targetType}`, 500, H_canvas-65);
-  ctx.fillText(`${t("score")}: ${computeScore(d.finalX, d.finalY).toFixed(1)}  (${t("offset")}: X:${xStr} Y:${yStr}mm)`, 650, H_canvas-65);
+  ctx.fillText(`${t("score")}: ${computeScore(d.impactX_mm, d.impactY_mm).toFixed(1)}  (${t("offset")}: X:${xStr} Y:${yStr}mm)`, 650, H_canvas-65);
 
   // Row 2
   ctx.fillText(`${t("drop")}: ${d.gravityDrop_mm.toFixed(1)}mm | ${t("cant")}: ${(cant*180/Math.PI).toFixed(1)}° | ${t("height")}: ${sightHeight_mm}mm | ${t("clicks")}: ${clickX},${clickY} (${click_mm.toFixed(1)}mm)`, 10, H_canvas-45);
