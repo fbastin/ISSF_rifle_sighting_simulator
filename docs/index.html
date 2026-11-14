@@ -114,10 +114,15 @@ body {
   font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
   font-size: .9em;
 }
+#main .table-scroll { overflow-x: auto; margin: 1rem 0; }
+#main .table-scroll table { margin: 0; }
 #main :not(pre) > code {
   background: var(--code-bg); padding: .15em .35em; border-radius: 4px;
 }
 .MathJax { font-size: 1.05em !important; }
+/* A display formula wider than a phone screen scrolls in its own frame
+   instead of widening the page (at 320 px: 928 px wide in section 3). */
+#main mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
 
 /* ── Nav buttons ───────────────────────────────────────────── */
 #nav-bar {
@@ -167,7 +172,7 @@ that models the optical and ballistic phenomena encountered in
 precision rifle marksmanship.  In ISSF competition, the “sight
 picture” is not a static image but a dynamic alignment of four
 independent planes: the shooter's eye, the rear diopter aperture, the
-front globe sight, and the target[nra,issf].
+front globe sight, and the target [nra,issf].
 
 The simulator allows students and athletes to isolate, vary, and
 observe six fundamental effects that are difficult to separate on the
@@ -205,9 +210,9 @@ build step is required.
 
 ## Interface Layout
 
-The canvas is divided into three regions (*User Manual*).
+The canvas is divided into three regions (Figure 1).
 
-<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_0.svg" alt="Schematic layout of the simulator interface." style="max-width:100%"><br><em><strong>Figure.</strong> Schematic layout of the simulator interface.</em></div>
+<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_0.svg" alt="Schematic layout of the simulator interface." style="max-width:100%"><br><em><strong>Figure 1.</strong> Schematic layout of the simulator interface.</em></div>
 
 - **Left panel** (0–500 px): the shooter's view through
         the rear diopter, showing the front tunnel, iris, target, and
@@ -223,24 +228,24 @@ The canvas is divided into three regions (*User Manual*).
 
 ## Controls Reference
 
-<table>
-<caption><strong>Table.</strong> Complete keyboard and mouse controls.</caption>
-<tr><th><strong>Input</strong></th><th><strong>Action</strong></th><th><strong>Range</strong></th><th><strong>Section</strong></th></tr>
-<tr><td>Mouse position</td><td>Eye offset (parallax)</td><td>canvas area</td><td><em>Parallax Error</em></td></tr>
-<tr><td><strong>A</strong> / <strong>D</strong></td><td>Rear aperture $\pm 0.1$ mm</td><td>0.8–2.2 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>Q</strong> / <strong>E</strong></td><td>Front iris $\pm 0.1$ mm</td><td>2.4–7.0 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>C</strong> / <strong>V</strong></td><td>Iris ring thickness $\pm 0.1$ mm</td><td>0.5–5.0 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>U</strong> / <strong>J</strong></td><td>Eye relief $\pm 1$ mm</td><td>50–215 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>W</strong> / <strong>S</strong></td><td>Sight height $\pm 1$ mm</td><td>$\geq 20$ mm</td><td><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
-<tr><td><strong>Z</strong> / <strong>X</strong></td><td>Rifle cant $\pm 0.57^{\circ}$</td><td>unlimited</td><td><em>Rifle Cant</em></td></tr>
-<tr><td>Arrow keys</td><td>Rear-sight clicks $\pm 1$</td><td>unlimited</td><td><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
-<tr><td><strong>G</strong> / <strong>H</strong></td><td>Click value $\pm 0.01$ mm</td><td>0.01–0.10 mm</td><td><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
-<tr><td><strong>O</strong> / <strong>P</strong></td><td>Wind speed $\pm 0.5$ m/s</td><td>0–10 m/s</td><td><em>Wind Drift</em></td></tr>
-<tr><td><strong>K</strong> / <strong>L</strong></td><td>Wind direction $\pm 8.6^{\circ}$</td><td>full circle</td><td><em>Wind Drift</em></td></tr>
-<tr><td><strong>T</strong></td><td>Toggle 10 m / 50 m target</td><td>—</td><td><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
-<tr><td><strong>R</strong></td><td>Reset all parameters to defaults</td><td>—</td><td>—</td></tr>
-<tr><td><strong>F</strong></td><td>Toggle language (English / French)</td><td>—</td><td>—</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 1.</strong> Complete keyboard and mouse controls.</caption>
+<tr><th style="text-align:left"><strong>Input</strong></th><th style="text-align:left"><strong>Action</strong></th><th style="text-align:left"><strong>Range</strong></th><th style="text-align:left"><strong>Section</strong></th></tr>
+<tr><td style="text-align:left">Mouse position</td><td style="text-align:left">Eye offset (parallax)</td><td style="text-align:left">canvas area</td><td style="text-align:left"><em>Parallax Error</em></td></tr>
+<tr><td style="text-align:left"><strong>A</strong> / <strong>D</strong></td><td style="text-align:left">Rear aperture $\pm 0.1$ mm</td><td style="text-align:left">0.8–2.2 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>Q</strong> / <strong>E</strong></td><td style="text-align:left">Front iris $\pm 0.1$ mm</td><td style="text-align:left">2.4–7.0 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>C</strong> / <strong>V</strong></td><td style="text-align:left">Iris ring thickness $\pm 0.1$ mm</td><td style="text-align:left">0.5–5.0 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>U</strong> / <strong>J</strong></td><td style="text-align:left">Eye relief $\pm 1$ mm</td><td style="text-align:left">50–215 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>W</strong> / <strong>S</strong></td><td style="text-align:left">Sight height $\pm 1$ mm</td><td style="text-align:left">$\geq 20$ mm</td><td style="text-align:left"><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
+<tr><td style="text-align:left"><strong>Z</strong> / <strong>X</strong></td><td style="text-align:left">Rifle cant $\pm 0.57^{\circ}$</td><td style="text-align:left">unlimited</td><td style="text-align:left"><em>Rifle Cant</em></td></tr>
+<tr><td style="text-align:left">Arrow keys</td><td style="text-align:left">Rear-sight clicks $\pm 1$</td><td style="text-align:left">unlimited</td><td style="text-align:left"><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
+<tr><td style="text-align:left"><strong>G</strong> / <strong>H</strong></td><td style="text-align:left">Click value $\pm 0.01$ mm</td><td style="text-align:left">0.01–0.10 mm</td><td style="text-align:left"><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
+<tr><td style="text-align:left"><strong>O</strong> / <strong>P</strong></td><td style="text-align:left">Wind speed $\pm 0.5$ m/s</td><td style="text-align:left">0–10 m/s</td><td style="text-align:left"><em>Wind Drift</em></td></tr>
+<tr><td style="text-align:left"><strong>K</strong> / <strong>L</strong></td><td style="text-align:left">Wind direction $\pm 8.6^{\circ}$</td><td style="text-align:left">full circle</td><td style="text-align:left"><em>Wind Drift</em></td></tr>
+<tr><td style="text-align:left"><strong>T</strong></td><td style="text-align:left">Toggle 10 m / 50 m target</td><td style="text-align:left">—</td><td style="text-align:left"><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
+<tr><td style="text-align:left"><strong>R</strong></td><td style="text-align:left">Reset all parameters to defaults</td><td style="text-align:left">—</td><td style="text-align:left">—</td></tr>
+<tr><td style="text-align:left"><strong>F</strong></td><td style="text-align:left">Toggle language (English / French)</td><td style="text-align:left">—</td><td style="text-align:left">—</td></tr>
+</table></div>
 
 ## Quick-Start Walkthrough
 
@@ -268,7 +273,7 @@ In ISSF rifle shooting, the shooter views the target through a
 small rear diopter aperture.  If the eye is not perfectly centered
 behind this aperture, the line of sight through the front sight
 projects onto a different point on the target than intended.  This
-displacement is called *parallax error*[nra,mann].
+displacement is called *parallax error* [nra,mann].
 
 Even sub-millimeter changes in cheek-weld position can shift the
 apparent aim point by a scoring ring or more on the target.  Because
@@ -281,7 +286,7 @@ point of impact has moved.
 At the 10 m air-rifle level, a 10.0 versus a 10.5 can determine a
 final ranking.  Parallax is the single largest source of shot-to-shot
 dispersion for a well-trained athlete whose hold and trigger control
-are consistent[nra].  Understanding the geometry allows
+are consistent [nra].  Understanding the geometry allows
 coaches to diagnose inconsistent groups that are not explained by
 natural hold wobble.
 
@@ -289,17 +294,17 @@ natural hold wobble.
 
 <div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_1.svg" alt="Parallax geometry.  An eye offset $e_x$ projects through
 the rear-sight center onto the target, producing an error $p_x$ in
-the opposite direction, magnified by the distance ratio." style="max-width:100%"><br><em><strong>Figure.</strong> Parallax geometry.  An eye offset $e_x$ projects through
+the opposite direction, magnified by the distance ratio." style="max-width:100%"><br><em><strong>Figure 2.</strong> Parallax geometry.  An eye offset $e_x$ projects through
 the rear-sight center onto the target, producing an error $p_x$ in
 the opposite direction, magnified by the distance ratio.</em></div>
 
 The line of sight originates at the eye position
-$(e_x, z_e)$, passes through the center of the rear aperture
-$(0, z_r)$, and intersects the target plane at $z_t$.  By the
+$(e_x,\,z_e)$, passes through the center of the rear aperture
+$(0,\,z_r)$, and intersects the target plane at $z_t$.  By the
 intercept theorem (similar triangles), the target intersection is:
 
 $$
-p_x = e_x \cdot \frac{z_r - z_t}{z_r - z_e} .
+p_x = e_x \cdot \frac{z_r - z_t}{z_r - z_e}\,.
 $$
 
 Since $z_t > z_r > z_e$, the fraction is negative, so the parallax
@@ -310,12 +315,12 @@ eye displacement and magnified by the ratio of distances.
 
 A smaller rear aperture physically blocks off-axis light rays,
 constraining the eye to a narrow cone and reducing the range of
-parallax offsets that are optically possible[hecht,smith].
+parallax offsets that are optically possible [hecht,smith].
 The simulator models this with a linear damping factor:
 
 $$
-f = \max \bigl(0.05, \tfrac{d_{\text{rear}}}{4.5}\bigr),
-  \qquad p_x \leftarrow p_x \cdot f ,
+f = \max\!\bigl(0.05,\;\tfrac{d_{\text{rear}}}{4.5}\bigr),
+  \qquad p_x \leftarrow p_x \cdot f\,,
 $$
 
 where $d_{\text{rear}}$ is the rear aperture diameter in mm.  At the
@@ -326,14 +331,14 @@ sensitivity by roughly 80 %.
 
 In `simulator.js`, the `compute()` function (lines 74–79):
 
-“`javascript
+```javascript
 const scale = (targetZ - eyeZ) / (rearZ - eyeZ);
 let px = eyeXoff + (0 - eyeXoff) * scale;
 let py = eyeYoff + (0 - eyeYoff) * scale;
 
 const f = Math.max(0.05, rearAperture_mm / 4.5);
 px *= f;  py *= f;
-“`
+```
 
 Here `scale` is the ratio $\frac{z_t - z_e}{z_r - z_e}$, and
 the expression `eyeXoff + (0 - eyeXoff) * scale` evaluates to
@@ -362,7 +367,7 @@ sight (*eye relief*) determine three competing properties:
 
 1. **Depth of field:** smaller apertures yield sharper images of
         both the front sight and the target, analogous to a pinhole
-        camera[hecht].
+        camera [hecht].
 2. **Light transmission:** too small an aperture reduces
         brightness and may cause diffraction artifacts, leading to eye
         fatigue.
@@ -377,13 +382,13 @@ sight ring blurs, degrading centering precision; too narrow and the
 image darkens, especially in indoor ranges with poor lighting.  Eye
 relief must also be consistent—changes in head position alter the
 apparent size of the rear aperture in the sight picture, which
-disrupts the concentricity judgment[nra].
+disrupts the concentricity judgment [nra].
 
 ## Physical Explanation and Illustration
 
 <div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_2.svg" alt="Pinhole analogy.  A smaller rear aperture restricts the cone
 of accepted light rays, increasing depth of field and reducing
-parallax sensitivity." style="max-width:100%"><br><em><strong>Figure.</strong> Pinhole analogy.  A smaller rear aperture restricts the cone
+parallax sensitivity." style="max-width:100%"><br><em><strong>Figure 3.</strong> Pinhole analogy.  A smaller rear aperture restricts the cone
 of accepted light rays, increasing depth of field and reducing
 parallax sensitivity.</em></div>
 
@@ -393,7 +398,7 @@ The visual angle subtended by the rear diopter from the eye depends
 inversely on the relief distance $R = z_r - z_e$:
 
 $$
-r_{\text{apparent}}  \propto  \frac{d_{\text{rear}}}{R} .
+r_{\text{apparent}} \;\propto\; \frac{d_{\text{rear}}}{R}\,.
 $$
 
 Larger relief makes the aperture appear smaller, narrowing the
@@ -401,7 +406,7 @@ visible field, while smaller relief opens the view.  The simulator
 implements this in the rendering code as:
 
 $$
-r_{\text{px}} = (d_{\text{rear}} \times 10) \times \frac{250}{R} .
+r_{\text{px}} = (d_{\text{rear}} \times 10) \times \frac{250}{R}\,.
 $$
 
 ### Target Blur
@@ -411,7 +416,7 @@ target image appears blurred.  The simulator applies a Gaussian blur
 proportional to the aperture size:
 
 $$
-\sigma_{\text{blur}} = \max \bigl(0, (d_{\text{rear}} - 0.9) \times 4\bigr) \text{px}.
+\sigma_{\text{blur}} = \max\!\bigl(0,\;(d_{\text{rear}} - 0.9) \times 4\bigr)\;\text{px}.
 $$
 
 ## Implementation
@@ -419,15 +424,16 @@ $$
 In `simulator.js`, the rendering function `drawLeft()`
 (lines 171–173 and 120–121):
 
-“`javascript
+```javascript
 const relief = Math.max(5, rearZ - eyeZ);
 const rearR = (rearAperture_mm * 10) * (250 / relief);
 const targetBlur = Math.max(0, (rearAperture_mm - 0.9) * 4);
-“`
+```
+
 
 The front iris and ring thickness are rendered as concentric arcs
-whose radii are proportional to `frontIris\_mm` and
-`frontThickness\_mm`, providing a visual representation of the
+whose radii are proportional to `frontIris_mm` and
+`frontThickness_mm`, providing a visual representation of the
 three-ring sight picture (rear diopter, front tunnel, front iris).
 
 ## Simulator Exercises
@@ -450,7 +456,7 @@ three-ring sight picture (rear diopter, front tunnel, front iris).
 ## The Issue for Competitive Shooters
 
 The line of sight is perfectly straight, but a projectile follows a
-parabolic arc under gravity[mccoy,rinker].  To make the
+parabolic arc under gravity [mccoy,rinker].  To make the
 bullet hit the point of aim at a given distance, the barrel must be
 angled slightly upward relative to the sight line.  The angular
 offset depends on the *sight height* (the vertical distance
@@ -467,14 +473,14 @@ turns sideways (*Rifle Cant*).  At 50 m, gravity drop is seven
 times larger than at 10 m, which is why canting errors are far more
 severe in smallbore competition.  Understanding the relationship between sight height,
 muzzle velocity, and gravity drop helps athletes interpret their
-equipment choices[litz,pejsa].
+equipment choices [litz,pejsa].
 
 ## Physical Explanation and Illustration
 
 <div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_3.svg" alt="Sight height and gravity drop.  The bore, $H$ below the line
 of sight, rises by $H + h_g$ over the distance: its straight extension
 crosses the target plane $h_g$ above the point of aim, and gravity
-brings the bullet down by $h_g$ onto it." style="max-width:100%"><br><em><strong>Figure.</strong> Sight height and gravity drop.  The bore, $H$ below the line
+brings the bullet down by $h_g$ onto it." style="max-width:100%"><br><em><strong>Figure 4.</strong> Sight height and gravity drop.  The bore, $H$ below the line
 of sight, rises by $H + h_g$ over the distance: its straight extension
 crosses the target plane $h_g$ above the point of aim, and gravity
 brings the bullet down by $h_g$ onto it.</em></div>
@@ -485,45 +491,45 @@ For a projectile with muzzle velocity $v$ fired at a target at
 distance $d$, the time of flight is:
 
 $$
-t = \frac{d}{v} .
+t = \frac{d}{v}\,.
 $$
 
-The vertical drop due to gravity during this time is[mccoy]:
+The vertical drop due to gravity during this time is [mccoy]:
 
 $$
-h_g = \frac{1}{2} g t^2 = \frac{g d^2}{2 v^2} .
+h_g = \frac{1}{2}\,g\,t^2 = \frac{g\,d^2}{2\,v^2}\,.
 $$
 
 Over the distance $d$ the bore must rise by
 
 $$
-H + h_g ,
+H + h_g\,,
 $$
 
 where $H$ is the sight height: $H$ to reach the line of sight, $h_g$
 to make up for the drop.  Typical values used in the simulator:
 
-<table>
-<caption><strong>Table.</strong> Time of flight and gravity drop for the two target modes.</caption>
-<tr><th><strong>Discipline</strong></th><th>$d$ (m)</th><th>$v$ (m/s)</th><th>$t$ (ms)</th><th>$h_g$ (mm)</th></tr>
-<tr><td>10 m Air Rifle</td><td>10</td><td>175</td><td>57.1</td><td>16.0</td></tr>
-<tr><td>50 m Smallbore</td><td>50</td><td>330</td><td>151.5</td><td>112.6</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 2.</strong> Time of flight and gravity drop for the two target modes.</caption>
+<tr><th style="text-align:left"><strong>Discipline</strong></th><th style="text-align:center">$d$ (m)</th><th style="text-align:center">$v$ (m/s)</th><th style="text-align:center">$t$ (ms)</th><th style="text-align:center">$h_g$ (mm)</th></tr>
+<tr><td style="text-align:left">10 m Air Rifle</td><td style="text-align:center">10</td><td style="text-align:center">175</td><td style="text-align:center">57.1</td><td style="text-align:center">16.0</td></tr>
+<tr><td style="text-align:left">50 m Smallbore</td><td style="text-align:center">50</td><td style="text-align:center">330</td><td style="text-align:center">151.5</td><td style="text-align:center">112.6</td></tr>
+</table></div>
 
 ## Implementation
 
 In `simulator.js`, `compute()`:
 
-“`javascript
+```javascript
 const dist_m = targetType === "10m" ? 10 : 50;
 const velocity_ms = targetType === "10m" ? 175.0 : 330.0;
 const time_s = dist_m / velocity_ms;
 const gravityDrop_mm = 0.5 * GRAVITY * (time_s * time_s) * 1000;
-“`
+```
 
 The factor of 1000 converts from metres to millimetres.  The sight
 height does not enter the computation of the impact: at the zeroing
-distance it cancels (*Rifle Cant*), and `sightHeight\_mm`
+distance it cancels (*Rifle Cant*), and `sightHeight_mm`
 only sets the drawing of the barrel in the sight picture.
 
 ## Simulator Exercises
@@ -548,7 +554,7 @@ the target plane $h_g$ above the point of aim; any tilt turns this
 offset out of the vertical plane, while gravity keeps pulling the
 bullet straight down.  The result is a point-of-impact error that has
 *both* a lateral and a vertical component—the “canting
-paradox”[rinker].
+paradox” [rinker].
 
 ## Why It Matters
 
@@ -561,7 +567,7 @@ about half the distance between two rings of the 50 m target
 appears “almost level” to the shooter, canting errors are easy to
 introduce and difficult to detect without a spirit level.  The impact
 **always drops** and shifts **toward the direction of
-the cant**[nra,rinker].
+the cant** [nra,rinker].
 
 ## Physical Explanation and Illustration
 
@@ -570,7 +576,7 @@ sight.  The straight extension of the bore crosses the target plane
 $h_g$ above the point of aim; tilting the rifle by $\theta$ about the
 line of sight turns this offset, while gravity still lowers the bullet
 by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$,
-vertical loss $\Delta y = h_g(1-\cos\theta)$." style="max-width:100%"><br><em><strong>Figure.</strong> The canting paradox, seen from behind along the line of
+vertical loss $\Delta y = h_g(1-\cos\theta)$." style="max-width:100%"><br><em><strong>Figure 5.</strong> The canting paradox, seen from behind along the line of
 sight.  The straight extension of the bore crosses the target plane
 $h_g$ above the point of aim; tilting the rifle by $\theta$ about the
 line of sight turns this offset, while gravity still lowers the bullet
@@ -581,11 +587,11 @@ vertical loss $\Delta y = h_g(1-\cos\theta)$.</em></div>
 
 Work in the rifle's own frame, on the target plane, with the point of
 aim at the origin.  The bore starts $H$ below the line of sight and
-rises $H + h_g$ over the distance (*Exterior Ballistics: Gravity and Trajectory*), so its
+rises $H + h_g$ over the distance (Figure 4), so its
 straight extension crosses the target plane at
 
 $$
-\mathbf{c} = (c_x, c_y) = (k_x, h_g + k_y) ,
+\mathbf{c} = (c_x,\;c_y) = (k_x,\;h_g + k_y)\,,
 $$
 
 where $(k_x, k_y)$ is the correction set with the rear-sight clicks
@@ -597,16 +603,16 @@ The impact relative to the point of aim ($+y$ up, $\theta > 0$
 clockwise as seen by the shooter) is
 
 $$
-\begin{aligned}X &= c_x\cos\theta + c_y\sin\theta ,\\
-  Y &= -c_x\sin\theta + c_y\cos\theta - h_g .\end{aligned}
+\begin{aligned}X &= c_x\cos\theta + c_y\sin\theta\,,\\
+  Y &= -c_x\sin\theta + c_y\cos\theta - h_g\,.\end{aligned}
 $$
 
-With the clicks at zero, $\mathbf{c} = (0, h_g)$ and the errors
+With the clicks at zero, $\mathbf{c} = (0,\,h_g)$ and the errors
 reduce to
 
 $$
-\begin{aligned}\Delta x &= h_g \sin\theta  ,          \\
-  \Delta y &= h_g (1 - \cos\theta)  ,\end{aligned}
+\begin{aligned}\Delta x &= h_g\,\sin\theta \,,          \\
+  \Delta y &= h_g\,(1 - \cos\theta) \,,\end{aligned}
 $$
 
 where $\Delta x$ is the lateral shift (positive in the direction of
@@ -637,7 +643,7 @@ make the error 4.7 times too large.
 
 The cancellation is exact at the zeroing distance, the only distance
 the simulator models.  At another distance $r$, the straight bore line
-crosses the target plane $h_g(d) r/d - H (1 - r/d)$ above the point
+crosses the target plane $h_g(d)\,r/d - H\,(1 - r/d)$ above the point
 of aim, and $H$ reappears.
 
 ### Numerical Example
@@ -646,8 +652,8 @@ At 50 m ($h_g = 112.6$ mm), a cant of
 $\theta = 2^\circ$ ($0.0349$ rad):
 
 $$
-\begin{aligned}\Delta x &= 112.6 \times \sin(0.0349) = 3.9 \text{mm} ,\\
-  \Delta y &= 112.6 \times (1 - \cos(0.0349)) = 0.07 \text{mm} .\end{aligned}
+\begin{aligned}\Delta x &= 112.6 \times \sin(0.0349) = 3.9\;\text{mm}\,,\\
+  \Delta y &= 112.6 \times (1 - \cos(0.0349)) = 0.07\;\text{mm}\,.\end{aligned}
 $$
 
 At 10 m ($h_g = 16.0$ mm), the same cant gives $\Delta x = 0.56$ mm
@@ -657,15 +663,15 @@ than the vertical drop, consistent with competitive experience.
 ## Implementation
 
 In `simulator.js`, `compute()` evaluates
-*eq:cant-X* and *eq:cant-Y* in millimetres, $+y$ up:
+*Rifle Cant* in millimetres, $+y$ up:
 
-“`javascript
+```javascript
 const gunX_mm = clickCountX * clickShift_mm;
 const gunY_mm = clickCountY * clickShift_mm + gravityDrop_mm;
 const cosCant = Math.cos(cant), sinCant = Math.sin(cant);
 const rifleX_mm =  gunX_mm * cosCant + gunY_mm * sinCant;
 const rifleY_mm = -gunX_mm * sinCant + gunY_mm * cosCant - gravityDrop_mm;
-“`
+```
 
 A positive `cant` is the clockwise rotation that
 `ctx.rotate(cant)` draws in the sight picture.  The vertical
@@ -697,7 +703,7 @@ diopter aperture in ISSF rifle shooting.  These adjustments—commonly
 called “clicks” because the mechanism produces an audible click per
 increment—physically displace the aperture relative to the barrel,
 changing the angle between the bore and the line of
-sight[nra].  Match diopters move a few hundredths of a
+sight [nra].  Match diopters move a few hundredths of a
 millimetre per click: the simulator default is $c = 0.04$ mm, and the
 value is adjustable with **G**/**H** over $0.01$–$0.10$ mm.
 
@@ -717,12 +723,12 @@ the impact in the *same* direction as the click, while a
 <div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_5.svg" alt="Mechanical sight adjustment geometry.  A rear-aperture click
 $c$ tilts the line of sight by $\theta = c/L$ ($L$: sight radius).
 Re-centering the sight picture rotates the whole gun—and the bore
-with it—by $\theta$, so the impact moves by $\Delta = c R/L$ at the
-target distance $R$, in the *same" style="max-width:100%"><br><em><strong>Figure.</strong> Mechanical sight adjustment geometry.  A rear-aperture click
+with it—by $\theta$, so the impact moves by $\Delta = c\,R/L$ at the
+target distance $R$, in the same direction as the click." style="max-width:100%"><br><em><strong>Figure 6.</strong> Mechanical sight adjustment geometry.  A rear-aperture click
 $c$ tilts the line of sight by $\theta = c/L$ ($L$: sight radius).
 Re-centering the sight picture rotates the whole gun—and the bore
-with it—by $\theta$, so the impact moves by $\Delta = c R/L$ at the
-target distance $R$, in the \emph{same</em></div>
+with it—by $\theta$, so the impact moves by $\Delta = c\,R/L$ at the
+target distance $R$, in the <em>same</em> direction as the click.</em></div>
 
 ## Mathematical Model
 
@@ -730,7 +736,7 @@ When the aperture is displaced by $c$ and the shooter re-centers the
 sight picture, the gun rotates by the small angle
 
 $$
-\theta = \frac{c*{L},
+\theta = \frac{c}{L},
   \qquad L = z_f - z_r \ \text{(sight radius)},
 $$
 
@@ -745,9 +751,9 @@ With the simulator's default click value $c = 0.04$ mm and a match
 sight radius $L = 800$ mm:
 
 $$
-\Delta = 0.04 \times \frac{10 000}{800} = 0.5\ \text{mm per click at 10 m},
+\Delta = 0.04 \times \frac{10\,000}{800} = 0.5\ \text{mm per click at 10 m},
   \qquad
-  \Delta = 0.04 \times \frac{50 000}{800} = 2.5\ \text{mm per click at 50 m}.
+  \Delta = 0.04 \times \frac{50\,000}{800} = 2.5\ \text{mm per click at 50 m}.
 $$
 
 Because the sight line is re-centered through the displaced aperture,
@@ -764,12 +770,13 @@ develops the same relation from Thales' theorem.)
 In `simulator.js`, the click value (in hundredths of a
 millimetre) and the per-click shift are:
 
-“`javascript
+```javascript
 const SIGHT_RADIUS_mm = 800;               // diopter<->front sight
 const clickShift_mm = (clickValue_cmm / 100) * (dist_m * 1000) / SIGHT_RADIUS_mm;
 const tx =  clickCountX * clickShift_mm * PX_PER_MM;
 const ty = -clickCountY * clickShift_mm * PX_PER_MM;  // canvas Y is down
-“`
+```
+
 
 ## Simulator Exercises
 
@@ -788,10 +795,10 @@ const ty = -clickCountY * clickShift_mm * PX_PER_MM;  // canvas Y is down
 
 Once the projectile leaves the barrel, it is subject to aerodynamic
 forces.  A crosswind exerts a lateral force that deflects the bullet
-from its intended path[mccoy,litz].  In outdoor ISSF
+from its intended path [mccoy,litz].  In outdoor ISSF
 disciplines (50 m rifle, 300 m rifle), wind reading is the
 dominant skill separating competitors of similar technical
-ability[litz].
+ability [litz].
 
 ## Why It Matters
 
@@ -805,7 +812,7 @@ of lateral drift—several scoring rings.
 
 <div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_6.svg" alt="Wind deflection (top-down view).  A crosswind with velocity
 component $W\sin\alpha$ pushes the bullet laterally over the full
-time of flight." style="max-width:100%"><br><em><strong>Figure.</strong> Wind deflection (top-down view).  A crosswind with velocity
+time of flight." style="max-width:100%"><br><em><strong>Figure 7.</strong> Wind deflection (top-down view).  A crosswind with velocity
 component $W\sin\alpha$ pushes the bullet laterally over the full
 time of flight.</em></div>
 
@@ -813,28 +820,28 @@ time of flight.</em></div>
 
 The full aerodynamic treatment of wind deflection involves the drag
 coefficient, projectile mass, and cross-sectional area integrated
-over the flight path[mccoy].  For pedagogical purposes, the
+over the flight path [mccoy].  For pedagogical purposes, the
 simulator uses a linearized empirical model:
 
 $$
-\begin{aligned}\Delta X_{\text{wind}} &= W \cdot K_w \cdot \sin\alpha  ,
+\begin{aligned}\Delta X_{\text{wind}} &= W \cdot K_w \cdot \sin\alpha \,,
     \\
-  \Delta Y_{\text{wind}} &= W \cdot K_{w,y} \cdot \cos\alpha  ,\end{aligned}
+  \Delta Y_{\text{wind}} &= W \cdot K_{w,y} \cdot \cos\alpha \,,\end{aligned}
 $$
 
 where $W$ is the wind speed (m/s), $\alpha$ is the wind direction
 angle (0$^\circ$ = tailwind, 90$^\circ$ = full crosswind from the
 left), $K_w$ is a lateral drift coefficient (mm per m/s of
-crosswind), and $K_{w,y} = 0.2 K_w$ is a much smaller longitudinal
+crosswind), and $K_{w,y} = 0.2\,K_w$ is a much smaller longitudinal
 coefficient representing the effect of head/tailwinds on time of
 flight and hence gravity drop.
 
-<table>
-<caption><strong>Table.</strong> Wind drift coefficients used in the simulator.</caption>
-<tr><th><strong>Discipline</strong></th><th>$K_w$ (mm per m/s)</th><th>$K_{w,y}$ (mm per m/s)</th></tr>
-<tr><td>10 m Air Rifle</td><td>1.2</td><td>0.24</td></tr>
-<tr><td>50 m Smallbore</td><td>10.5</td><td>2.1</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 3.</strong> Wind drift coefficients used in the simulator.</caption>
+<tr><th style="text-align:left"><strong>Discipline</strong></th><th style="text-align:center">$K_w$ (mm per m/s)</th><th style="text-align:center">$K_{w,y}$ (mm per m/s)</th></tr>
+<tr><td style="text-align:left">10 m Air Rifle</td><td style="text-align:center">1.2</td><td style="text-align:center">0.24</td></tr>
+<tr><td style="text-align:left">50 m Smallbore</td><td style="text-align:center">10.5</td><td style="text-align:center">2.1</td></tr>
+</table></div>
 
 ### Wind Direction Convention
 
@@ -847,30 +854,31 @@ pointing in the direction of wind flow.
 A tailwind ($\alpha = 0^\circ$) slightly increases the effective
 velocity, reducing time of flight and gravity drop, thus raising the
 impact.  A headwind ($\alpha = 180^\circ$) has the opposite
-effect[litz].
+effect [litz].
 
 ## Implementation
 
 In `simulator.js`, `compute()`:
 
-“`javascript
+```javascript
 const windFactor = targetType === "10m" ? 1.2 : 10.5;
 const windDriftX_mm = windSpeed_ms * windFactor
                       * Math.sin(windDir_rad);
 const windDriftY_mm = windSpeed_ms * (windFactor * 0.2)
                       * Math.cos(windDir_rad);
-“`
+```
 
 The wind drift is added to the parallax and to the cant result
 (*Rifle Cant*), all in millimetres in mathematical coordinates
 ($+y$ up); the sum is *subtracted* from the canvas ordinate of the
 sight picture, which grows downward:
 
-“`javascript
+```javascript
 const impactX_mm = parallaxX_mm + rifleX_mm + windDriftX_mm;
 const impactY_mm = parallaxY_mm + rifleY_mm + windDriftY_mm;
 finalY: cy - impactY_mm * PX_PER_MM
-“`
+```
+
 
 ## Simulator Exercises
 
@@ -889,7 +897,7 @@ finalY: cy - impactY_mm * PX_PER_MM
 ## ISSF Decimal Scoring
 
 In ISSF finals and electronic-target qualification, shots are scored
-to one decimal place[issf].  A shot takes the highest zone that
+to one decimal place [issf].  A shot takes the highest zone that
 its hole touches; each ring is divided into ten equal zones numbered
 from `.0` to `.9`, so the value is truncated, not
 rounded, and the maximum is 10.9.
@@ -897,15 +905,15 @@ rounded, and the maximum is 10.9.
 ## Target Faces
 
 The simulator draws and scores the two rifle faces of the ISSF
-General Technical Rules (2020, \S 6.3.4.2–6.3.4.3):
+General Technical Rules (2020, § 6.3.4.2–6.3.4.3):
 
-<table>
-<caption><strong>Table.</strong> Rifle target faces used by the simulator.</caption>
-<tr><th><strong>Face</strong></th><th><strong>10 ring</strong></th><th><strong>Ring spacing</strong></th><th><strong>Black</strong></th><th><strong>Gauge</strong></th></tr>
-<tr><td></td><td>(diameter)</td><td>(radius)</td><td>(diameter)</td><td></td></tr>
-<tr><td>10 m air rifle</td><td>0.5 mm</td><td>2.5 mm</td><td>30.5 mm (rings 4–9)</td><td>4.5 mm</td></tr>
-<tr><td>50 m rifle</td><td>10.4 mm</td><td>8.0 mm</td><td>112.4 mm (part of 3 to 10)</td><td>5.6 mm</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 4.</strong> Rifle target faces used by the simulator.</caption>
+<tr><th style="text-align:left"><strong>Face</strong></th><th style="text-align:center"><strong>10 ring</strong></th><th style="text-align:center"><strong>Ring spacing</strong></th><th style="text-align:center"><strong>Black</strong></th><th style="text-align:center"><strong>Gauge</strong></th></tr>
+<tr><td style="text-align:left"></td><td style="text-align:center">(diameter)</td><td style="text-align:center">(radius)</td><td style="text-align:center">(diameter)</td><td style="text-align:center"></td></tr>
+<tr><td style="text-align:left">10 m air rifle</td><td style="text-align:center">0.5 mm</td><td style="text-align:center">2.5 mm</td><td style="text-align:center">30.5 mm (rings 4–9)</td><td style="text-align:center">4.5 mm</td></tr>
+<tr><td style="text-align:left">50 m rifle</td><td style="text-align:center">10.4 mm</td><td style="text-align:center">8.0 mm</td><td style="text-align:center">112.4 mm (part of 3 to 10)</td><td style="text-align:center">5.6 mm</td></tr>
+</table></div>
 
 ## Mathematical Model
 
@@ -916,8 +924,8 @@ equals the ring spacing $s$ ($0.25 + 2.25 = 2.5$ mm at 10 m,
 $5.2 + 2.8 = 8.0$ mm at 50 m), so the decimal score is
 
 $$
-S = \min \Bigl(10.9, \tfrac{1}{10}\bigl\lfloor 10 (11 - r/s)\bigr\rfloor\Bigr),
-  \qquad S = 0 \ \text{if}\ 11 - r/s < 1 .
+S = \min\!\Bigl(10.9,\;\tfrac{1}{10}\bigl\lfloor 10\,(11 - r/s)\bigr\rfloor\Bigr),
+  \qquad S = 0 \ \text{if}\ 11 - r/s < 1\,.
 $$
 
 Key values (10 m / 50 m):
@@ -934,7 +942,7 @@ millimetres from the target centre and applies the general rule—the
 10 zone split over $r_{10} + b$, the others over $s$—which reduces to
 *Scoring Model* on these two faces:
 
-“`javascript
+```javascript
 function computeScore(x_mm, y_mm) {
   const T = TARGETS[targetType];
   const d = Math.hypot(x_mm, y_mm);
@@ -947,7 +955,7 @@ function computeScore(x_mm, y_mm) {
   const Rv = R10 + k * T.spacing;
   return v + Math.min(9, Math.floor(10 * (Rv - d) / T.spacing + EPS)) / 10;
 }
-“`
+```
 
 The right panel draws the rings and the impact at the same scale,
 `TARGETS[targetType].pxPerMm`: 6 px/mm at 10 m and
@@ -961,15 +969,15 @@ $+x$ pointing right and $+y$ pointing *down*.  All rendering
 and impact calculations use this convention.  When converting from
 standard mathematical formulas (where $+y$ is up), vertical
 quantities must be negated.  The key sign conventions in
-`compute()` are summarized in *Implementation Notes*.
+`compute()` are summarized in Table 5.
 
-<table>
-<caption><strong>Table.</strong> Sign conventions for vertical quantities.</caption>
-<tr><th><strong>Quantity</strong></th><th><strong>Math frame</strong> ($+y$ up)</th><th><strong>Canvas</strong> ($+y$ down)</th></tr>
-<tr><td>Cant $Y$ (<em>eq:cant-Y</em>), no clicks</td><td>$h_g(\cos\theta - 1) \leq 0$</td><td>subtracted $\Rightarrow$ $+$ (down)</td></tr>
-<tr><td>Wind $\Delta Y$ (tailwind)</td><td>$>0$ (up)</td><td>subtracted $\Rightarrow$ $-$ (up)</td></tr>
-<tr><td>Parallax $p_y$</td><td>opposite to $e_y$</td><td>computed in canvas pixels, negated into mm</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 5.</strong> Sign conventions for vertical quantities.</caption>
+<tr><th style="text-align:left"><strong>Quantity</strong></th><th style="text-align:center"><strong>Math frame</strong> ($+y$ up)</th><th style="text-align:center"><strong>Canvas</strong> ($+y$ down)</th></tr>
+<tr><td style="text-align:left">Cant $Y$ (<em>Rifle Cant</em>), no clicks</td><td style="text-align:center">$h_g(\cos\theta - 1) \leq 0$</td><td style="text-align:center">subtracted $\Rightarrow$ $+$ (down)</td></tr>
+<tr><td style="text-align:left">Wind $\Delta Y$ (tailwind)</td><td style="text-align:center">$>0$ (up)</td><td style="text-align:center">subtracted $\Rightarrow$ $-$ (up)</td></tr>
+<tr><td style="text-align:left">Parallax $p_y$</td><td style="text-align:center">opposite to $e_y$</td><td style="text-align:center">computed in canvas pixels, negated into mm</td></tr>
+</table></div>
 
 ## Rendering Pipeline
 
@@ -990,20 +998,20 @@ Each animation frame (via `requestAnimationFrame`) executes:
 
 ## Physical Constants and Defaults
 
-<table>
-<caption><strong>Table.</strong> Physical constants and default parameters.</caption>
-<tr><th><strong>Constant</strong></th><th><strong>Description</strong></th><th><strong>Value</strong></th></tr>
-<tr><td><code>PX\_PER\_MM</code></td><td>Sight-picture scale (left panel)</td><td>6.0 px/mm</td></tr>
-<tr><td><code>TARGETS[...].pxPerMm</code></td><td>Target-face scale (right panel)</td><td>6.0 / 1.875 px/mm</td></tr>
-<tr><td><code>rearZ</code></td><td>Rear sight $z$</td><td>220</td></tr>
-<tr><td><code>frontZ</code></td><td>Front sight $z$</td><td>350</td></tr>
-<tr><td><code>targetZ</code></td><td>Target $z$</td><td>480</td></tr>
-<tr><td><code>GRAVITY</code></td><td>Gravitational accel.</td><td>9.81 m/s$^2$</td></tr>
-<tr><td><code>eyeZ</code></td><td>Eye position $z$ (default)</td><td>190</td></tr>
-<tr><td><code>rearAperture\_mm</code></td><td>Rear diopter (default)</td><td>1.6 mm</td></tr>
-<tr><td><code>frontIris\_mm</code></td><td>Front iris (default)</td><td>3.8 mm</td></tr>
-<tr><td><code>sightHeight\_mm</code></td><td>Sight height (default)</td><td>60 mm</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 6.</strong> Physical constants and default parameters.</caption>
+<tr><th style="text-align:left"><strong>Constant</strong></th><th style="text-align:left"><strong>Description</strong></th><th style="text-align:right"><strong>Value</strong></th></tr>
+<tr><td style="text-align:left"><code>PX_PER_MM</code></td><td style="text-align:left">Sight-picture scale (left panel)</td><td style="text-align:right">6.0 px/mm</td></tr>
+<tr><td style="text-align:left"><code>TARGETS[...].pxPerMm</code></td><td style="text-align:left">Target-face scale (right panel)</td><td style="text-align:right">6.0 / 1.875 px/mm</td></tr>
+<tr><td style="text-align:left"><code>rearZ</code></td><td style="text-align:left">Rear sight $z$</td><td style="text-align:right">220</td></tr>
+<tr><td style="text-align:left"><code>frontZ</code></td><td style="text-align:left">Front sight $z$</td><td style="text-align:right">350</td></tr>
+<tr><td style="text-align:left"><code>targetZ</code></td><td style="text-align:left">Target $z$</td><td style="text-align:right">480</td></tr>
+<tr><td style="text-align:left"><code>GRAVITY</code></td><td style="text-align:left">Gravitational accel.</td><td style="text-align:right">9.81 m/s$^2$</td></tr>
+<tr><td style="text-align:left"><code>eyeZ</code></td><td style="text-align:left">Eye position $z$ (default)</td><td style="text-align:right">190</td></tr>
+<tr><td style="text-align:left"><code>rearAperture_mm</code></td><td style="text-align:left">Rear diopter (default)</td><td style="text-align:right">1.6 mm</td></tr>
+<tr><td style="text-align:left"><code>frontIris_mm</code></td><td style="text-align:left">Front iris (default)</td><td style="text-align:right">3.8 mm</td></tr>
+<tr><td style="text-align:left"><code>sightHeight_mm</code></td><td style="text-align:left">Sight height (default)</td><td style="text-align:right">60 mm</td></tr>
+</table></div>
 </script>
 <script type="text/markdown" data-title="Summary of Corrections Applied" id="page-10">
 The following corrections were identified and applied to
@@ -1011,18 +1019,18 @@ The following corrections were identified and applied to
 
 1. **Cant vertical error sign (line 93).**
     The original code computed
-    `shiftY\_mm = -totalComp\_mm * (1 - Math.cos(cant))`,
+    `shiftY_mm = -totalComp_mm * (1 - Math.cos(cant))`,
     yielding a negative value that moved the impact *upward*
     on the canvas.  Physically, canting always lowers the impact
     (*Rifle Cant*).  In Canvas coordinates ($+y$ down), the
     correct expression is
-    `shiftY\_mm = totalComp\_mm * (1 - Math.cos(cant))`,
+    `shiftY_mm = totalComp_mm * (1 - Math.cos(cant))`,
     which is non-negative and moves the impact downward.
 2. **Scoring offset (line 113).**
-    The original formula `10.9 - dist\_mm / 2.5` evaluated to
+    The original formula `10.9 - dist_mm / 2.5` evaluated to
     9.9 at the 10-ring boundary (2.5 mm), whereas ISSF rules score
     this as 10.0.  The corrected formula
-    `Math.min(10.9, 11.0 - dist\_mm / 2.5)` aligns the ring
+    `Math.min(10.9, 11.0 - dist_mm / 2.5)` aligns the ring
     boundaries with integer scores and caps the maximum at 10.9.
 3. **Cant error and sight height (2026-11-12).**
     The code and this document took the cant error as
@@ -1036,7 +1044,7 @@ The following corrections were identified and applied to
 4. **50 m target (2026-11-12).**
     The 50 m mode drew and scored the 10 m air-rifle face, 2.5 mm
     between rings, with a note giving about 4 mm for the 50 m face;
-    it is 8 mm (*tab:faces*).  Clicks, wind and cant at 50 m
+    it is 8 mm (Table 4).  Clicks, wind and cant at 50 m
     cost 3.2 times too many points.  Both faces now come from the
     `TARGETS` table.
 5. **Display scale of the impact (2026-11-12).**
@@ -1053,75 +1061,8 @@ The following corrections were identified and applied to
 
 The backup file `simulator.best.js` retains the original code
 for reference.
-
-\begin{thebibliography}{10}
-
-\bibitem{mccoy}
-  R. L. McCoy,
-  *Modern Exterior Ballistics: The Launch and Flight Dynamics
-  of Symmetric Projectiles*,
-  2nd ed. Schiffer Publishing, 2012.
-  ISBN 978-0-7643-3825-0.
-
-\bibitem{litz}
-  B. Litz,
-  *Applied Ballistics for Long-Range Shooting*,
-  3rd ed. Applied Ballistics LLC, 2015.
-  ISBN 978-0-9909206-1-8.
-
-\bibitem{issf}
-  International Shooting Sport Federation,
-  *ISSF Rule Book*, Edition 2026
-  (First Print 12/2025, effective 1 January 2026).
-  [https://www.issf-sports.org/rules](https://www.issf-sports.org/rules)
-
-\bibitem{hecht}
-  E. Hecht,
-  *Optics*,
-  5th ed. Pearson, 2017.
-  ISBN 978-0-13-397722-6.
-
-\bibitem{smith}
-  W. J. Smith,
-  *Modern Optical Engineering*,
-  4th ed. McGraw-Hill, 2007.
-  ISBN 978-0-07-147687-4.
-
-\bibitem{rinker}
-  R. A. Rinker,
-  *Understanding Firearm Ballistics: Basic to Advanced
-  Ballistics*,
-  6th ed. Mulberry House Publishing, 2005.
-  ISBN 978-0-9645598-5-1.
-
-\bibitem{mann}
-  F. W. Mann,
-  *The Bullet's Flight from Powder to Target*,
-  Wolfe Publishing, 1909 (reprinted 2009).
-  ISBN 978-0-935632-04-0.
-
-\bibitem{pejsa}
-  A. J. Pejsa,
-  *Modern Practical Ballistics*,
-  2nd ed. Kenwood Publishing, 1991.
-  ISBN 978-0-9612776-3-5.
-
-\bibitem{nra}
-  National Rifle Association,
-  *NRA Guide to Rifle Marksmanship*,
-  NRA Publications, 2014.
-
-\bibitem{hatcher}
-  J. S. Hatcher,
-  *Hatcher's Notebook*,
-  3rd ed. Stackpole Books, 1962.
-  ISBN 978-0-8117-0795-4.
-
-\end{thebibliography}
 </script>
 <script type="text/markdown" data-title="References" id="page-11">
-# References
-
 - **[mccoy]** R. L. McCoy, *Modern Exterior Ballistics: The Launch and Flight Dynamics of Symmetric Projectiles*, 2nd ed. Schiffer Publishing, 2012. ISBN 978-0-7643-3825-0.
 - **[litz]** B. Litz, *Applied Ballistics for Long-Range Shooting*, 3rd ed. Applied Ballistics LLC, 2015. ISBN 978-0-9909206-1-8.
 - **[issf]** International Shooting Sport Federation, *ISSF Rule Book*, Edition 2026 (First Print 12/2025, effective 1 January 2026). [https://www.issf-sports.org/rules](https://www.issf-sports.org/rules)
@@ -1142,10 +1083,23 @@ const pages = Array.from(pageEls).map(el => ({
 }));
 
 let cur = 0;
+// marked reads "\\" as an escaped backslash and _..._ or *...* as emphasis:
+// multi-line formulas (cases, aligned) reached MathJax on a single line.
+// Formulas are set aside before marked.parse() and put back untouched;
+// code blocks first, so that a "$" in code is not taken for math.
+function parseWithMath(md) {
+  const code = [], math = [];
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  md = md.replace(/^```[\s\S]*?^```[ \t]*$/gm, s => '\uE000C' + (code.push(s) - 1) + '\uE001');
+  md = md.replace(/\$\$[\s\S]+?\$\$|(?<!\\)\$(?:\\.|[^$\\])+?\$/g,
+                  s => '\uE000M' + (math.push(s) - 1) + '\uE001');
+  md = md.replace(/\uE000C(\d+)\uE001/g, (_, k) => code[k]);
+  return marked.parse(md).replace(/\uE000M(\d+)\uE001/g, (_, k) => esc(math[k]));
+}
 
 function render(i) {
   cur = i;
-  const html = marked.parse(pages[i].md);
+  const html = parseWithMath(pages[i].md);
   document.getElementById('content').innerHTML = '<h1>' + pages[i].title + '</h1>\n' + html;
 
   if (window.MathJax && MathJax.typeset) {

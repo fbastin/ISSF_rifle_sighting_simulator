@@ -11,7 +11,7 @@ the target plane $h_g$ above the point of aim; any tilt turns this
 offset out of the vertical plane, while gravity keeps pulling the
 bullet straight down.  The result is a point-of-impact error that has
 *both* a lateral and a vertical component—the “canting
-paradox”[rinker].
+paradox” [rinker].
 
 ## Why It Matters
 
@@ -24,31 +24,21 @@ about half the distance between two rings of the 50 m target
 appears “almost level” to the shooter, canting errors are easy to
 introduce and difficult to detect without a spirit level.  The impact
 **always drops** and shifts **toward the direction of
-the cant**[nra,rinker].
+the cant** [nra,rinker].
 
 ## Physical Explanation and Illustration
 
-<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_4.svg" alt="The canting paradox, seen from behind along the line of
-sight.  The straight extension of the bore crosses the target plane
-$h_g$ above the point of aim; tilting the rifle by $\theta$ about the
-line of sight turns this offset, while gravity still lowers the bullet
-by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$,
-vertical loss $\Delta y = h_g(1-\cos\theta)$." style="max-width:100%"><br><em><strong>Figure.</strong> The canting paradox, seen from behind along the line of
-sight.  The straight extension of the bore crosses the target plane
-$h_g$ above the point of aim; tilting the rifle by $\theta$ about the
-line of sight turns this offset, while gravity still lowers the bullet
-by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$,
-vertical loss $\Delta y = h_g(1-\cos\theta)$.</em></div>
+> **Figure 5.** The canting paradox, seen from behind along the line of sight.  The straight extension of the bore crosses the target plane $h_g$ above the point of aim; tilting the rifle by $\theta$ about the line of sight turns this offset, while gravity still lowers the bullet by $h_g$ straight down: lateral error $\Delta x = h_g\sin\theta$, vertical loss $\Delta y = h_g(1-\cos\theta)$.
 
 ## Mathematical Model
 
 Work in the rifle's own frame, on the target plane, with the point of
 aim at the origin.  The bore starts $H$ below the line of sight and
-rises $H + h_g$ over the distance (*Exterior Ballistics: Gravity and Trajectory*), so its
+rises $H + h_g$ over the distance (Figure 4), so its
 straight extension crosses the target plane at
 
 $$
-\mathbf{c} = (c_x, c_y) = (k_x, h_g + k_y) ,
+\mathbf{c} = (c_x,\;c_y) = (k_x,\;h_g + k_y)\,,
 $$
 
 where $(k_x, k_y)$ is the correction set with the rear-sight clicks
@@ -60,16 +50,16 @@ The impact relative to the point of aim ($+y$ up, $\theta > 0$
 clockwise as seen by the shooter) is
 
 $$
-\begin{aligned}X &= c_x\cos\theta + c_y\sin\theta ,\\
-  Y &= -c_x\sin\theta + c_y\cos\theta - h_g .\end{aligned}
+\begin{aligned}X &= c_x\cos\theta + c_y\sin\theta\,,\\
+  Y &= -c_x\sin\theta + c_y\cos\theta - h_g\,.\end{aligned}
 $$
 
-With the clicks at zero, $\mathbf{c} = (0, h_g)$ and the errors
+With the clicks at zero, $\mathbf{c} = (0,\,h_g)$ and the errors
 reduce to
 
 $$
-\begin{aligned}\Delta x &= h_g \sin\theta  ,          \\
-  \Delta y &= h_g (1 - \cos\theta)  ,\end{aligned}
+\begin{aligned}\Delta x &= h_g\,\sin\theta \,,          \\
+  \Delta y &= h_g\,(1 - \cos\theta) \,,\end{aligned}
 $$
 
 where $\Delta x$ is the lateral shift (positive in the direction of
@@ -100,7 +90,7 @@ make the error 4.7 times too large.
 
 The cancellation is exact at the zeroing distance, the only distance
 the simulator models.  At another distance $r$, the straight bore line
-crosses the target plane $h_g(d) r/d - H (1 - r/d)$ above the point
+crosses the target plane $h_g(d)\,r/d - H\,(1 - r/d)$ above the point
 of aim, and $H$ reappears.
 
 ### Numerical Example
@@ -109,8 +99,8 @@ At 50 m ($h_g = 112.6$ mm), a cant of
 $\theta = 2^\circ$ ($0.0349$ rad):
 
 $$
-\begin{aligned}\Delta x &= 112.6 \times \sin(0.0349) = 3.9 \text{mm} ,\\
-  \Delta y &= 112.6 \times (1 - \cos(0.0349)) = 0.07 \text{mm} .\end{aligned}
+\begin{aligned}\Delta x &= 112.6 \times \sin(0.0349) = 3.9\;\text{mm}\,,\\
+  \Delta y &= 112.6 \times (1 - \cos(0.0349)) = 0.07\;\text{mm}\,.\end{aligned}
 $$
 
 At 10 m ($h_g = 16.0$ mm), the same cant gives $\Delta x = 0.56$ mm
@@ -120,15 +110,15 @@ than the vertical drop, consistent with competitive experience.
 ## Implementation
 
 In `simulator.js`, `compute()` evaluates
-*eq:cant-X* and *eq:cant-Y* in millimetres, $+y$ up:
+*Rifle Cant* in millimetres, $+y$ up:
 
-“`javascript
+```javascript
 const gunX_mm = clickCountX * clickShift_mm;
 const gunY_mm = clickCountY * clickShift_mm + gravityDrop_mm;
 const cosCant = Math.cos(cant), sinCant = Math.sin(cant);
 const rifleX_mm =  gunX_mm * cosCant + gunY_mm * sinCant;
 const rifleY_mm = -gunX_mm * sinCant + gunY_mm * cosCant - gravityDrop_mm;
-“`
+```
 
 A positive `cant` is the clockwise rotation that
 `ctx.rotate(cant)` draws in the sight picture.  The vertical

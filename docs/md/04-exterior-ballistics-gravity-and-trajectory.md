@@ -3,7 +3,7 @@
 ## The Issue for Competitive Shooters
 
 The line of sight is perfectly straight, but a projectile follows a
-parabolic arc under gravity[mccoy,rinker].  To make the
+parabolic arc under gravity [mccoy,rinker].  To make the
 bullet hit the point of aim at a given distance, the barrel must be
 angled slightly upward relative to the sight line.  The angular
 offset depends on the *sight height* (the vertical distance
@@ -20,17 +20,11 @@ turns sideways (*Rifle Cant*).  At 50 m, gravity drop is seven
 times larger than at 10 m, which is why canting errors are far more
 severe in smallbore competition.  Understanding the relationship between sight height,
 muzzle velocity, and gravity drop helps athletes interpret their
-equipment choices[litz,pejsa].
+equipment choices [litz,pejsa].
 
 ## Physical Explanation and Illustration
 
-<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_3.svg" alt="Sight height and gravity drop.  The bore, $H$ below the line
-of sight, rises by $H + h_g$ over the distance: its straight extension
-crosses the target plane $h_g$ above the point of aim, and gravity
-brings the bullet down by $h_g$ onto it." style="max-width:100%"><br><em><strong>Figure.</strong> Sight height and gravity drop.  The bore, $H$ below the line
-of sight, rises by $H + h_g$ over the distance: its straight extension
-crosses the target plane $h_g$ above the point of aim, and gravity
-brings the bullet down by $h_g$ onto it.</em></div>
+> **Figure 4.** Sight height and gravity drop.  The bore, $H$ below the line of sight, rises by $H + h_g$ over the distance: its straight extension crosses the target plane $h_g$ above the point of aim, and gravity brings the bullet down by $h_g$ onto it.
 
 ## Mathematical Model
 
@@ -38,45 +32,45 @@ For a projectile with muzzle velocity $v$ fired at a target at
 distance $d$, the time of flight is:
 
 $$
-t = \frac{d}{v} .
+t = \frac{d}{v}\,.
 $$
 
-The vertical drop due to gravity during this time is[mccoy]:
+The vertical drop due to gravity during this time is [mccoy]:
 
 $$
-h_g = \frac{1}{2} g t^2 = \frac{g d^2}{2 v^2} .
+h_g = \frac{1}{2}\,g\,t^2 = \frac{g\,d^2}{2\,v^2}\,.
 $$
 
 Over the distance $d$ the bore must rise by
 
 $$
-H + h_g ,
+H + h_g\,,
 $$
 
 where $H$ is the sight height: $H$ to reach the line of sight, $h_g$
 to make up for the drop.  Typical values used in the simulator:
 
-<table>
-<caption><strong>Table.</strong> Time of flight and gravity drop for the two target modes.</caption>
-<tr><th><strong>Discipline</strong></th><th>$d$ (m)</th><th>$v$ (m/s)</th><th>$t$ (ms)</th><th>$h_g$ (mm)</th></tr>
-<tr><td>10 m Air Rifle</td><td>10</td><td>175</td><td>57.1</td><td>16.0</td></tr>
-<tr><td>50 m Smallbore</td><td>50</td><td>330</td><td>151.5</td><td>112.6</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 2.</strong> Time of flight and gravity drop for the two target modes.</caption>
+<tr><th style="text-align:left"><strong>Discipline</strong></th><th style="text-align:center">$d$ (m)</th><th style="text-align:center">$v$ (m/s)</th><th style="text-align:center">$t$ (ms)</th><th style="text-align:center">$h_g$ (mm)</th></tr>
+<tr><td style="text-align:left">10 m Air Rifle</td><td style="text-align:center">10</td><td style="text-align:center">175</td><td style="text-align:center">57.1</td><td style="text-align:center">16.0</td></tr>
+<tr><td style="text-align:left">50 m Smallbore</td><td style="text-align:center">50</td><td style="text-align:center">330</td><td style="text-align:center">151.5</td><td style="text-align:center">112.6</td></tr>
+</table></div>
 
 ## Implementation
 
 In `simulator.js`, `compute()`:
 
-“`javascript
+```javascript
 const dist_m = targetType === "10m" ? 10 : 50;
 const velocity_ms = targetType === "10m" ? 175.0 : 330.0;
 const time_s = dist_m / velocity_ms;
 const gravityDrop_mm = 0.5 * GRAVITY * (time_s * time_s) * 1000;
-“`
+```
 
 The factor of 1000 converts from metres to millimetres.  The sight
 height does not enter the computation of the impact: at the zeroing
-distance it cancels (*Rifle Cant*), and `sightHeight\_mm`
+distance it cancels (*Rifle Cant*), and `sightHeight_mm`
 only sets the drawing of the barrel in the sight picture.
 
 ## Simulator Exercises

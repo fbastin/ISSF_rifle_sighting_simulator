@@ -13,12 +13,64 @@ Usage:
     python3 tex2html.py input.tex out/   # custom input and output directory
 """
 
+import html as html_lib
 import re
 import sys
 import os
 import subprocess
 import tempfile
 import textwrap
+
+
+# ── Helpers: nested braces, protected spans ──────────────────────────
+
+def brace_arg(s: str, open_idx: int) -> tuple[str, int]:
+    """Return the content of the {...} group opening at s[open_idx], nested
+    braces included, and the index just after its closing brace.  (A lazy
+    regex such as \\caption\\{(.+?)\\} stops at the first '}', which cut
+    captions in the middle of h_{\\text{hold}}.)"""
+    depth, i = 0, open_idx
+    while i < len(s):
+        ch = s[i]
+        if ch == '\\':
+            i += 2
+            continue
+        if ch == '{':
+            depth += 1
+        elif ch == '}':
+            depth -= 1
+            if depth == 0:
+                return s[open_idx + 1:i], i + 1
+        i += 1
+    raise ValueError(f'unbalanced braces after: {s[open_idx:open_idx + 60]!r}')
+
+
+def command_arg(s: str, cmd: str) -> str | None:
+    """Argument of the first \\cmd{...} in s, or None."""
+    m = re.search(r'\\' + cmd + r'\s*\{', s)
+    return brace_arg(s, m.end() - 1)[0] if m else None
+
+
+# Math is left to MathJax untouched: the text substitutions below (--, ~, \,)
+# would otherwise rewrite it.  Display math first, then inline math.
+MATH_RE = re.compile(r'\$\$.*?\$\$|(?<!\\)\$(?:\\.|[^$\\])+?\$', re.DOTALL)
+
+
+def protect(s: str, pattern, store: list, tag: str) -> str:
+    """Replace each match of pattern by a private-use placeholder."""
+    def keep(m):
+        store.append(m.group(0))
+        return f'{tag}{len(store) - 1}'
+    return pattern.sub(keep, s) if hasattr(pattern, 'sub') else re.sub(pattern, keep, s)
+
+
+def restore(s: str, store: list, tag: str) -> str:
+    return re.sub('' + tag + r'(\d+)' + '', lambda m: store[int(m.group(1))], s)
+
+
+def latex_unescape(s: str) -> str:
+    """Undo LaTeX escapes inside code: \\_ -> _, \\# -> #, etc."""
+    return re.sub(r'\\([_#%&{}$])', r'\1', s)
 
 
 # ── LaTeX to Markdown conversion ─────────────────────────────────────
@@ -151,28 +203,43 @@ def convert_section(tex: str, fig_svgs: list[str | None] = None,
     # Remove \noindent
     md = re.sub(r'\\noindent\b\s*', '', md)
 
-    # ── Figures: include SVG image + caption ─────────────────────────
+    # ── Code listings ────────────────────────────────────────────────
+    # Set aside first and restored last: convert_inline() turned the ``
+    # of the ``` fences into a typographic quote (“`javascript), so no
+    # listing was ever rendered as code.
+    code_blocks: list[str] = []
+    md = protect(
+        md, re.compile(r'\\begin\{lstlisting\}(.*?)\\end\{lstlisting\}', re.DOTALL),
+        code_blocks, 'L')
+    code_blocks[:] = [
+        '\n```javascript\n'
+        + re.sub(r'^\\begin\{lstlisting\}(?:\[[^\]]*\])?|\\end\{lstlisting\}$', '', b).strip()
+        + '\n```\n'
+        for b in code_blocks
+    ]
+
+    # ── Figures: include SVG image + numbered caption ───────────────
     def replace_figure(m):
         body = m.group(1)
         idx = fig_counter[0]
         fig_counter[0] += 1
 
-        cap = re.search(r'\\caption\{(.+?)\}', body, re.DOTALL)
-        caption = ''
-        if cap:
-            caption = convert_inline(cap.group(1).strip())
+        raw = command_arg(body, 'caption')
+        caption = md_inline_to_html(convert_inline(raw.strip())) if raw else ''
+        label = f'Figure {idx + 1}.'
+        alt = html_lib.escape(re.sub(r'<[^>]+>', '', caption) or label, quote=True)
 
         svg = fig_svgs[idx] if idx < len(fig_svgs) else None
         if svg:
             parts = ['\n<div style="text-align:center;margin:1.5rem 0">']
-            parts.append(f'<img src="{svg}" alt="{caption}" style="max-width:100%">')
+            parts.append(f'<img src="{svg}" alt="{alt}" style="max-width:100%">')
             if caption:
-                parts.append(f'<br><em><strong>Figure.</strong> {caption}</em>')
+                parts.append(f'<br><em><strong>{label}</strong> {caption}</em>')
             parts.append('</div>\n\n')
             return ''.join(parts)
 
-        if caption:
-            return f'\n> **Figure.** {caption}\n\n'
+        if raw:
+            return f'\n> **{label}** ' + re.sub(r'\s*\n\s*', ' ', convert_inline(raw.strip())) + '\n\n'
         return '\n'
 
     md = re.sub(
@@ -182,13 +249,6 @@ def convert_section(tex: str, fig_svgs: list[str | None] = None,
 
     # ── Tables ───────────────────────────────────────────────────────
     md = convert_tables(md)
-
-    # ── Code listings ────────────────────────────────────────────────
-    md = re.sub(
-        r'\\begin\{lstlisting\}(.*?)\\end\{lstlisting\}',
-        lambda m: '\n```javascript\n' + m.group(1).strip() + '\n```\n',
-        md, flags=re.DOTALL
-    )
 
     # ── Math environments ────────────────────────────────────────────
     # equation -> $$ ... $$
@@ -228,7 +288,7 @@ def convert_section(tex: str, fig_svgs: list[str | None] = None,
     # Collapse multiple blank lines
     md = re.sub(r'\n{4,}', '\n\n\n', md)
 
-    return md.strip()
+    return restore(md, code_blocks, 'L').strip()
 
 
 def clean_math(s: str) -> str:
@@ -238,16 +298,28 @@ def clean_math(s: str) -> str:
 
 
 def convert_inline(s: str) -> str:
-    """Convert inline LaTeX markup to Markdown."""
+    """Convert inline LaTeX markup to Markdown.  Math ($...$, $$...$$) and
+    code spans are set aside so that the text substitutions (--, ~, \\, ...)
+    do not rewrite them."""
+    # $\times$ -> ×, $\approx$ -> ≈ (whole formulas, before math is set aside)
+    s = s.replace('$\\times$', '×')
+    s = s.replace('$\\approx$', '≈')
+    math: list[str] = []
+    s = protect(s, MATH_RE, math, 'M')
+    # \texttt{...} and \code{...} and \file{...} -> `...`, LaTeX escapes
+    # undone (`click\_value\_mm` showed its backslashes)
+    code: list[str] = []
+    s = protect(s, re.compile(r'\\(?:texttt|code|file)\{((?:[^{}]|\{[^{}]*\})*)\}'), code, 'C')
+    code[:] = ['`' + latex_unescape(re.sub(r'^\\\w+\{|\}$', '', c)) + '`' for c in code]
+    # \href{url}{text} -> [text](url), \url{...} -> [url](url)
+    s = re.sub(r'\\href\{([^}]*)\}\{([^}]*)\}', r'[\2](\1)', s)
+    s = re.sub(r'\\url\{([^}]*)\}', r'[\1](\1)', s)
+    s = protect(s, re.compile(r'\[[^\]\n]*\]\([^)\s]*\)'), code, 'C')
     # \textbf{...} -> **...**
     s = re.sub(r'\\textbf\{([^}]*)\}', r'**\1**', s)
     # \emph{...} and \textit{...} -> *...*
     s = re.sub(r'\\emph\{([^}]*)\}', r'*\1*', s)
     s = re.sub(r'\\textit\{([^}]*)\}', r'*\1*', s)
-    # \texttt{...} and \code{...} and \file{...} -> `...`
-    s = re.sub(r'\\texttt\{([^}]*)\}', r'`\1`', s)
-    s = re.sub(r'\\code\{([^}]*)\}', r'`\1`', s)
-    s = re.sub(r'\\file\{([^}]*)\}', r'`\1`', s)
     # \key{...} -> **...**
     s = re.sub(r'\\key\{([^}]*)\}', r'**\1**', s)
     # \textcolor{...}{...} -> just the text
@@ -256,10 +328,9 @@ def convert_inline(s: str) -> str:
     s = re.sub(r'\\textsf\{([^}]*)\}', r'\1', s)
     # \cref{...} and \Cref{...} -> *Section Name*
     s = re.sub(r'\\[Cc]ref\{([^}]*)\}', lambda m: cref_replace(m.group(1)), s)
-    # \cite{...} -> [keys]
-    s = re.sub(r'~?\\cite\{([^}]*)\}', r'[\1]', s)
-    # \url{...} -> [url](url)
-    s = re.sub(r'\\url\{([^}]*)\}', r'[\1](\1)', s)
+    # \cite{...} -> [keys]; the ~ before it is a space ("is[mccoy]" otherwise)
+    s = re.sub(r'~\\cite\{([^}]*)\}', r' [\1]', s)
+    s = re.sub(r'\\cite\{([^}]*)\}', r'[\1]', s)
     # --- -> —
     s = s.replace('---', '—')
     # -- -> –
@@ -277,11 +348,10 @@ def convert_inline(s: str) -> str:
     s = s.replace('~', ' ')
     # \% -> %
     s = s.replace('\\%', '%')
-    # \$ -> $ (but be careful with math)
-    # $\times$ -> × (but leave normal $ math alone)
-    s = s.replace('$\\times$', '×')
-    # $\approx$ -> ≈
-    s = s.replace('$\\approx$', '≈')
+    # \S -> §
+    s = re.sub(r'\\S(?![A-Za-z])\s*', '§ ', s)
+    # Control space "\ " (vs.\ Parallel) -> space; not the "\\ " of a line break
+    s = re.sub(r'(?<!\\)\\ ', ' ', s)
     # Remove \noindent
     s = re.sub(r'\\noindent\s*', '', s)
     # Remove remaining \centering
@@ -289,55 +359,48 @@ def convert_inline(s: str) -> str:
     # Remove [nosep]
     s = re.sub(r'\[nosep\]', '', s)
 
-    return s
+    s = restore(s, code, 'C')
+    return restore(s, math, 'M')
 
 
-# Map of \label keys to human-readable section names
-CREF_MAP = {
-    'sec:intro': 'Introduction',
-    'sec:manual': 'User Manual',
-    'sec:parallax': 'Parallax Error',
-    'sec:aperture': 'Aperture Size and Eye Relief',
-    'sec:ballistics': 'Exterior Ballistics: Gravity and Trajectory',
-    'sec:cant': 'Rifle Cant',
-    'sec:clicks': 'Mechanical Sight Adjustment (Clicks)',
-    'sec:wind': 'Wind Drift',
-    'sec:scoring': 'Scoring Model',
-    'sec:implementation': 'Implementation Notes',
-    'sec:errata': 'Summary of Corrections Applied',
-    'sec:layout': 'User Manual',
-    'sec:controls': 'User Manual',
-    'sec:quickstart': 'User Manual',
-    'sec:parallax-impl': 'Parallax Error',
-    'sec:cant-impl': 'Rifle Cant',
-    'sec:coords': 'Implementation Notes',
-    'fig:layout': 'User Manual',
-    'fig:parallax': 'Parallax Error',
-    'fig:aperture': 'Aperture Size and Eye Relief',
-    'fig:trajectory': 'Exterior Ballistics: Gravity and Trajectory',
-    'fig:cant': 'Rifle Cant',
-    'fig:clicks': 'Mechanical Sight Adjustment (Clicks)',
-    'fig:wind': 'Wind Drift',
-    'tab:controls': 'User Manual',
-    'tab:drop': 'Exterior Ballistics: Gravity and Trajectory',
-    'tab:wind': 'Wind Drift',
-    'tab:signs': 'Implementation Notes',
-    'tab:constants': 'Implementation Notes',
-    'eq:parallax': 'Parallax Error',
-    'eq:damping': 'Parallax Error',
-    'eq:apparent-size': 'Aperture Size and Eye Relief',
-    'eq:rearR': 'Aperture Size and Eye Relief',
-    'eq:blur': 'Aperture Size and Eye Relief',
-    'eq:tof': 'Exterior Ballistics: Gravity and Trajectory',
-    'eq:drop': 'Exterior Ballistics: Gravity and Trajectory',
-    'eq:totalcomp': 'Exterior Ballistics: Gravity and Trajectory',
-    'eq:cant-x': 'Rifle Cant',
-    'eq:cant-y': 'Rifle Cant',
-    'eq:clicks': 'Mechanical Sight Adjustment (Clicks)',
-    'eq:wind-x': 'Wind Drift',
-    'eq:wind-y': 'Wind Drift',
-    'eq:score': 'Scoring Model',
-}
+# \label key -> readable name, filled by build_label_map() from the document
+# itself.  (The map used to be written by hand, copied from the rifle
+# simulator: none of this document's labels was in it, so \Cref{fig:cantfig}
+# came out as "fig:cantfig".)
+CREF_MAP: dict[str, str] = {}
+
+
+def clean_title(title: str) -> str:
+    r"""Section title as displayed (vs.\ Parallel -> vs. Parallel)."""
+    return re.sub(r'\s+', ' ', convert_inline(title)).strip()
+
+
+def build_label_map(body: str) -> dict[str, str]:
+    r"""Map each \label to the title of its \section, or to "Figure N" for a
+    figure (numbered in order, as in the PDF and in the captions here)."""
+    labels: dict[str, str] = {}
+    section, figure, in_figure, table, in_table = '', 0, False, 0, False
+    for m in re.finditer(r'\\section\{([^}]+)\}|\\(?:begin|end)\{(?:figure|table)\}|\\label\{([^}]+)\}', body):
+        tok = m.group(0)
+        if m.group(1) is not None:
+            section = clean_title(m.group(1))
+        elif tok.startswith('\\begin{figure'):
+            figure, in_figure = figure + 1, True
+        elif tok.startswith('\\end{figure'):
+            in_figure = False
+        elif tok.startswith('\\begin{table'):
+            table, in_table = table + 1, True
+        elif tok.startswith('\\end{table'):
+            in_table = False
+        else:
+            key = m.group(2)
+            if in_figure and key.startswith('fig:'):
+                labels[key] = f'Figure {figure}'
+            elif in_table and key.startswith('tab:'):
+                labels[key] = f'Table {table}'
+            else:
+                labels[key] = section
+    return labels
 
 
 def cref_replace(keys: str) -> str:
@@ -346,62 +409,84 @@ def cref_replace(keys: str) -> str:
     names = []
     seen = set()
     for p in parts:
+        if p not in CREF_MAP:
+            print(f'  WARNING: unknown reference {p!r}')
         name = CREF_MAP.get(p, p)
         if name not in seen:
-            names.append(f'*{name}*')
+            names.append(name if name.startswith(('Figure ', 'Table ')) else f'*{name}*')
             seen.add(name)
     return ' and '.join(names) if len(names) <= 2 else ', '.join(names)
 
 
 def md_inline_to_html(s: str) -> str:
-    """Convert markdown bold/italic to HTML for use inside HTML elements."""
+    """Convert markdown bold/italic/code to HTML for use inside HTML elements
+    (marked leaves the inside of an HTML block alone).  Math is skipped."""
+    math: list[str] = []
+    s = protect(s, MATH_RE, math, 'M')
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
     s = re.sub(r'\*(.+?)\*', r'<em>\1</em>', s)
-    s = re.sub(r'`(.+?)`', r'<code>\1</code>', s)
-    return s
+    s = re.sub(r'`(.+?)`', lambda m: '<code>' + html_lib.escape(m.group(1)) + '</code>', s)
+    s = re.sub(r'\[([^\]\n]*)\]\(([^)\s]*)\)', r'<a href="\2">\1</a>', s)
+    return restore(s, math, 'M')
+
+
+TABULAR_RE = re.compile(r'\\begin\{tabular\}\{((?:[^{}]|\{[^{}]*\})*)\}(.*?)\\end\{tabular\}', re.DOTALL)
 
 
 def convert_tables(md: str) -> str:
-    """Convert LaTeX tabular environments to HTML tables."""
+    """Convert LaTeX tables to HTML: table floats, and bare tabulars (usually
+    inside a center environment), which used to be left as raw LaTeX."""
     pattern = r'\\begin\{table\}\[H\](.*?)\\end\{table\}'
-    md = re.sub(pattern, lambda m: _convert_one_table(m.group(1)), md, flags=re.DOTALL)
+    def numbered(m):
+        TABLE_COUNTER[0] += 1
+        return _convert_one_table(m.group(1), TABLE_COUNTER[0])
+    md = re.sub(pattern, numbered, md, flags=re.DOTALL)
+    md = re.sub(
+        r'(?:\\begin\{center\}\s*)?(\\begin\{tabular\}.*?\\end\{tabular\})(?:\s*\\end\{center\})?',
+        lambda m: _convert_one_table(m.group(1)), md, flags=re.DOTALL)
     return md
 
 
-def _convert_one_table(body: str) -> str:
-    """Convert a single table environment body to an HTML table."""
-    cap_match = re.search(r'\\caption\{(.+?)\}', body, re.DOTALL)
-    caption = ''
-    if cap_match:
-        caption = md_inline_to_html(convert_inline(cap_match.group(1).strip()))
+# Table floats numbered in document order, as in the PDF; reset before each pass.
+TABLE_COUNTER = [0]
 
-    # Handle nested braces in column spec like {@{}llll@{}}
-    tab_match = re.search(
-        r'\\begin\{tabular\}\{(?:[^{}]*|\{[^{}]*\})*\}(.*?)\\end\{tabular\}',
-        body, re.DOTALL
-    )
+
+def _convert_one_table(body: str, number: int | None = None) -> str:
+    """Convert a single table environment body to an HTML table."""
+    raw_caption = command_arg(body, 'caption')
+    caption = md_inline_to_html(convert_inline(raw_caption.strip())) if raw_caption else ''
+
+    tab_match = TABULAR_RE.search(body)
     if not tab_match:
         return f'\n<p><strong>{caption}</strong></p>\n' if caption else '\n'
 
-    tab = tab_match.group(1)
+    # Column alignment from the spec ({lccc}, {@{}ll@{}}, {|l|r|} ...)
+    spec = re.sub(r'@\{[^{}]*\}|[|]', '', tab_match.group(1))
+    aligns = [{'l': 'left', 'c': 'center', 'r': 'right'}.get(ch[0], 'left')
+              for ch in re.findall(r'[lcrp](?:\{[^{}]*\})?', spec)]
 
-    tab = re.sub(r'\\(toprule|midrule|bottomrule)\s*', '', tab)
+    tab = tab_match.group(2)
+    tab = re.sub(r'\\(toprule|midrule|bottomrule|hline)\s*', '', tab)
     tab = re.sub(r'\\(small|centering)\s*', '', tab)
 
     rows = [r.strip() for r in tab.split('\\\\') if r.strip()]
     if not rows:
         return f'\n<p><strong>{caption}</strong></p>\n' if caption else '\n'
 
-    html = '\n<table>\n'
+    # A blank-line-free HTML block: marked passes it through untouched.  The
+    # wrapper scrolls sideways instead of widening a narrow screen.
+    html = '\n\n<div class="table-scroll"><table>\n'
     if caption:
-        html += f'<caption><strong>Table.</strong> {caption}</caption>\n'
+        html += f'<caption><strong>Table{" " + str(number) if number else ""}.</strong> {caption}</caption>\n'
 
     for i, row in enumerate(rows):
-        cells = [md_inline_to_html(convert_inline(c.strip())) for c in row.split('&')]
+        cells = [md_inline_to_html(convert_inline(c.strip())) for c in re.split(r'(?<!\\)&', row)]
         tag = 'th' if i == 0 else 'td'
-        html += '<tr>' + ''.join(f'<{tag}>{c}</{tag}>' for c in cells) + '</tr>\n'
+        html += '<tr>' + ''.join(
+            f'<{tag} style="text-align:{aligns[j] if j < len(aligns) else "left"}">{c}</{tag}>'
+            for j, c in enumerate(cells)) + '</tr>\n'
 
-    html += '</table>\n'
+    html += '</table></div>\n\n'
     return html
 
 
@@ -443,7 +528,7 @@ def convert_bibliography(tex: str) -> list[tuple[str, str]] | None:
     body = bib_match.group(1)
     entries = re.findall(r'\\bibitem\{(\w+)\}\s*(.*?)(?=\\bibitem|\Z)', body, re.DOTALL)
 
-    lines = ['# References\n']
+    lines = []
     for key, content in entries:
         content = content.strip()
         content = convert_inline(content)
@@ -572,10 +657,15 @@ body {{
   font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
   font-size: .9em;
 }}
+#main .table-scroll {{ overflow-x: auto; margin: 1rem 0; }}
+#main .table-scroll table {{ margin: 0; }}
 #main :not(pre) > code {{
   background: var(--code-bg); padding: .15em .35em; border-radius: 4px;
 }}
 .MathJax {{ font-size: 1.05em !important; }}
+/* A display formula wider than a phone screen scrolls in its own frame
+   instead of widening the page (at 320 px: 928 px wide in section 3). */
+#main mjx-container[display="true"] {{ overflow-x: auto; overflow-y: hidden; max-width: 100%; }}
 
 /* ── Nav buttons ───────────────────────────────────────────── */
 #nav-bar {{
@@ -629,10 +719,23 @@ const pages = Array.from(pageEls).map(el => ({{
 }}));
 
 let cur = 0;
+// marked reads "\\\\" as an escaped backslash and _..._ or *...* as emphasis:
+// multi-line formulas (cases, aligned) reached MathJax on a single line.
+// Formulas are set aside before marked.parse() and put back untouched;
+// code blocks first, so that a "$" in code is not taken for math.
+function parseWithMath(md) {{
+  const code = [], math = [];
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  md = md.replace(/^```[\\s\\S]*?^```[ \\t]*$/gm, s => '\\uE000C' + (code.push(s) - 1) + '\\uE001');
+  md = md.replace(/\\$\\$[\\s\\S]+?\\$\\$|(?<!\\\\)\\$(?:\\\\.|[^$\\\\])+?\\$/g,
+                  s => '\\uE000M' + (math.push(s) - 1) + '\\uE001');
+  md = md.replace(/\\uE000C(\\d+)\\uE001/g, (_, k) => code[k]);
+  return marked.parse(md).replace(/\\uE000M(\\d+)\\uE001/g, (_, k) => esc(math[k]));
+}}
 
 function render(i) {{
   cur = i;
-  const html = marked.parse(pages[i].md);
+  const html = parseWithMath(pages[i].md);
   document.getElementById('content').innerHTML = '<h1>' + pages[i].title + '</h1>\\n' + html;
 
   if (window.MathJax && MathJax.typeset) {{
@@ -691,7 +794,8 @@ def build_page_script(index: int, title: str, md_content: str) -> str:
     """Wrap Markdown content in a <script type="text/markdown"> tag."""
     # Escape </script> inside content (shouldn't occur, but safety)
     safe = md_content.replace('</script>', '<\\/script>')
-    return f'<script type="text/markdown" data-title="{title}" id="page-{index}">\n{safe}\n</script>'
+    return (f'<script type="text/markdown" data-title="{html_lib.escape(title, quote=True)}" '
+            f'id="page-{index}">\n{safe}\n</script>')
 
 
 def main():
@@ -721,8 +825,11 @@ def main():
     fig_svgs = compile_figures(figures, out_dir)
     print(f"  {sum(1 for s in fig_svgs if s):d}/{len(figures)} figures compiled")
 
-    # Extract body
+    # Extract body.  The bibliography gets a page of its own (below): left in
+    # the body, it was also appended as raw LaTeX to the last section.
     body = strip_preamble(tex)
+    body = re.sub(r'\\begin\{thebibliography\}.*?\\end\{thebibliography\}', '', body, flags=re.DOTALL)
+    CREF_MAP.update(build_label_map(body))
 
     # Split into sections
     sections = split_sections(body)
@@ -732,10 +839,11 @@ def main():
 
     # Convert each section (shared counter tracks figure order across sections)
     fig_counter = [0]
+    TABLE_COUNTER[0] = 0
     pages = []
     for title, content in sections:
         md = convert_section(content, fig_svgs, fig_counter)
-        pages.append((title, md))
+        pages.append((clean_title(title), md))
 
     # Add bibliography as final page if present
     if bib_md:
@@ -760,6 +868,21 @@ def main():
         f.write(html)
 
     print(f"Wrote {out_path} ({len(html):,} bytes)")
+
+    # Markdown export, one file per page, when <out_dir>/md exists.  Figures
+    # are quoted captions (no SVG).  It used to be regenerated by hand.
+    md_dir = os.path.join(out_dir, 'md')
+    if os.path.isdir(md_dir):
+        md_counter = [0]          # figures numbered across pages, as in the HTML
+        TABLE_COUNTER[0] = 0
+        md_pages = [(clean_title(t), convert_section(c, [], md_counter)) for t, c in sections]
+        if bib_md:
+            md_pages.append(("References", bib_md))
+        for i, (title, md) in enumerate(md_pages):
+            slug = re.sub(r'[^a-z0-9]+', '-', title.lower()).strip('-')
+            with open(os.path.join(md_dir, f'{i:02d}-{slug}.md'), 'w', encoding='utf-8') as f:
+                f.write(f'# {title}\n\n{md}\n')
+        print(f"Wrote {len(md_pages)} Markdown pages to {md_dir}")
 
 
 if __name__ == '__main__':

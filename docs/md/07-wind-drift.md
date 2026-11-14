@@ -4,10 +4,10 @@
 
 Once the projectile leaves the barrel, it is subject to aerodynamic
 forces.  A crosswind exerts a lateral force that deflects the bullet
-from its intended path[mccoy,litz].  In outdoor ISSF
+from its intended path [mccoy,litz].  In outdoor ISSF
 disciplines (50 m rifle, 300 m rifle), wind reading is the
 dominant skill separating competitors of similar technical
-ability[litz].
+ability [litz].
 
 ## Why It Matters
 
@@ -19,38 +19,34 @@ of lateral drift—several scoring rings.
 
 ## Physical Explanation and Illustration
 
-<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_6.svg" alt="Wind deflection (top-down view).  A crosswind with velocity
-component $W\sin\alpha$ pushes the bullet laterally over the full
-time of flight." style="max-width:100%"><br><em><strong>Figure.</strong> Wind deflection (top-down view).  A crosswind with velocity
-component $W\sin\alpha$ pushes the bullet laterally over the full
-time of flight.</em></div>
+> **Figure 7.** Wind deflection (top-down view).  A crosswind with velocity component $W\sin\alpha$ pushes the bullet laterally over the full time of flight.
 
 ## Mathematical Model
 
 The full aerodynamic treatment of wind deflection involves the drag
 coefficient, projectile mass, and cross-sectional area integrated
-over the flight path[mccoy].  For pedagogical purposes, the
+over the flight path [mccoy].  For pedagogical purposes, the
 simulator uses a linearized empirical model:
 
 $$
-\begin{aligned}\Delta X_{\text{wind}} &= W \cdot K_w \cdot \sin\alpha  ,
+\begin{aligned}\Delta X_{\text{wind}} &= W \cdot K_w \cdot \sin\alpha \,,
     \\
-  \Delta Y_{\text{wind}} &= W \cdot K_{w,y} \cdot \cos\alpha  ,\end{aligned}
+  \Delta Y_{\text{wind}} &= W \cdot K_{w,y} \cdot \cos\alpha \,,\end{aligned}
 $$
 
 where $W$ is the wind speed (m/s), $\alpha$ is the wind direction
 angle (0$^\circ$ = tailwind, 90$^\circ$ = full crosswind from the
 left), $K_w$ is a lateral drift coefficient (mm per m/s of
-crosswind), and $K_{w,y} = 0.2 K_w$ is a much smaller longitudinal
+crosswind), and $K_{w,y} = 0.2\,K_w$ is a much smaller longitudinal
 coefficient representing the effect of head/tailwinds on time of
 flight and hence gravity drop.
 
-<table>
-<caption><strong>Table.</strong> Wind drift coefficients used in the simulator.</caption>
-<tr><th><strong>Discipline</strong></th><th>$K_w$ (mm per m/s)</th><th>$K_{w,y}$ (mm per m/s)</th></tr>
-<tr><td>10 m Air Rifle</td><td>1.2</td><td>0.24</td></tr>
-<tr><td>50 m Smallbore</td><td>10.5</td><td>2.1</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 3.</strong> Wind drift coefficients used in the simulator.</caption>
+<tr><th style="text-align:left"><strong>Discipline</strong></th><th style="text-align:center">$K_w$ (mm per m/s)</th><th style="text-align:center">$K_{w,y}$ (mm per m/s)</th></tr>
+<tr><td style="text-align:left">10 m Air Rifle</td><td style="text-align:center">1.2</td><td style="text-align:center">0.24</td></tr>
+<tr><td style="text-align:left">50 m Smallbore</td><td style="text-align:center">10.5</td><td style="text-align:center">2.1</td></tr>
+</table></div>
 
 ### Wind Direction Convention
 
@@ -63,30 +59,31 @@ pointing in the direction of wind flow.
 A tailwind ($\alpha = 0^\circ$) slightly increases the effective
 velocity, reducing time of flight and gravity drop, thus raising the
 impact.  A headwind ($\alpha = 180^\circ$) has the opposite
-effect[litz].
+effect [litz].
 
 ## Implementation
 
 In `simulator.js`, `compute()`:
 
-“`javascript
+```javascript
 const windFactor = targetType === "10m" ? 1.2 : 10.5;
 const windDriftX_mm = windSpeed_ms * windFactor
                       * Math.sin(windDir_rad);
 const windDriftY_mm = windSpeed_ms * (windFactor * 0.2)
                       * Math.cos(windDir_rad);
-“`
+```
 
 The wind drift is added to the parallax and to the cant result
 (*Rifle Cant*), all in millimetres in mathematical coordinates
 ($+y$ up); the sum is *subtracted* from the canvas ordinate of the
 sight picture, which grows downward:
 
-“`javascript
+```javascript
 const impactX_mm = parallaxX_mm + rifleX_mm + windDriftX_mm;
 const impactY_mm = parallaxY_mm + rifleY_mm + windDriftY_mm;
 finalY: cy - impactY_mm * PX_PER_MM
-“`
+```
+
 
 ## Simulator Exercises
 

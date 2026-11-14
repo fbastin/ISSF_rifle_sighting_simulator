@@ -9,9 +9,9 @@ build step is required.
 
 ## Interface Layout
 
-The canvas is divided into three regions (*User Manual*).
+The canvas is divided into three regions (Figure 1).
 
-<div style="text-align:center;margin:1.5rem 0"><img src="figures/fig_0.svg" alt="Schematic layout of the simulator interface." style="max-width:100%"><br><em><strong>Figure.</strong> Schematic layout of the simulator interface.</em></div>
+> **Figure 1.** Schematic layout of the simulator interface.
 
 - **Left panel** (0–500 px): the shooter's view through
         the rear diopter, showing the front tunnel, iris, target, and
@@ -27,24 +27,24 @@ The canvas is divided into three regions (*User Manual*).
 
 ## Controls Reference
 
-<table>
-<caption><strong>Table.</strong> Complete keyboard and mouse controls.</caption>
-<tr><th><strong>Input</strong></th><th><strong>Action</strong></th><th><strong>Range</strong></th><th><strong>Section</strong></th></tr>
-<tr><td>Mouse position</td><td>Eye offset (parallax)</td><td>canvas area</td><td><em>Parallax Error</em></td></tr>
-<tr><td><strong>A</strong> / <strong>D</strong></td><td>Rear aperture $\pm 0.1$ mm</td><td>0.8–2.2 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>Q</strong> / <strong>E</strong></td><td>Front iris $\pm 0.1$ mm</td><td>2.4–7.0 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>C</strong> / <strong>V</strong></td><td>Iris ring thickness $\pm 0.1$ mm</td><td>0.5–5.0 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>U</strong> / <strong>J</strong></td><td>Eye relief $\pm 1$ mm</td><td>50–215 mm</td><td><em>Aperture Size and Eye Relief</em></td></tr>
-<tr><td><strong>W</strong> / <strong>S</strong></td><td>Sight height $\pm 1$ mm</td><td>$\geq 20$ mm</td><td><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
-<tr><td><strong>Z</strong> / <strong>X</strong></td><td>Rifle cant $\pm 0.57^{\circ}$</td><td>unlimited</td><td><em>Rifle Cant</em></td></tr>
-<tr><td>Arrow keys</td><td>Rear-sight clicks $\pm 1$</td><td>unlimited</td><td><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
-<tr><td><strong>G</strong> / <strong>H</strong></td><td>Click value $\pm 0.01$ mm</td><td>0.01–0.10 mm</td><td><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
-<tr><td><strong>O</strong> / <strong>P</strong></td><td>Wind speed $\pm 0.5$ m/s</td><td>0–10 m/s</td><td><em>Wind Drift</em></td></tr>
-<tr><td><strong>K</strong> / <strong>L</strong></td><td>Wind direction $\pm 8.6^{\circ}$</td><td>full circle</td><td><em>Wind Drift</em></td></tr>
-<tr><td><strong>T</strong></td><td>Toggle 10 m / 50 m target</td><td>—</td><td><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
-<tr><td><strong>R</strong></td><td>Reset all parameters to defaults</td><td>—</td><td>—</td></tr>
-<tr><td><strong>F</strong></td><td>Toggle language (English / French)</td><td>—</td><td>—</td></tr>
-</table>
+<div class="table-scroll"><table>
+<caption><strong>Table 1.</strong> Complete keyboard and mouse controls.</caption>
+<tr><th style="text-align:left"><strong>Input</strong></th><th style="text-align:left"><strong>Action</strong></th><th style="text-align:left"><strong>Range</strong></th><th style="text-align:left"><strong>Section</strong></th></tr>
+<tr><td style="text-align:left">Mouse position</td><td style="text-align:left">Eye offset (parallax)</td><td style="text-align:left">canvas area</td><td style="text-align:left"><em>Parallax Error</em></td></tr>
+<tr><td style="text-align:left"><strong>A</strong> / <strong>D</strong></td><td style="text-align:left">Rear aperture $\pm 0.1$ mm</td><td style="text-align:left">0.8–2.2 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>Q</strong> / <strong>E</strong></td><td style="text-align:left">Front iris $\pm 0.1$ mm</td><td style="text-align:left">2.4–7.0 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>C</strong> / <strong>V</strong></td><td style="text-align:left">Iris ring thickness $\pm 0.1$ mm</td><td style="text-align:left">0.5–5.0 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>U</strong> / <strong>J</strong></td><td style="text-align:left">Eye relief $\pm 1$ mm</td><td style="text-align:left">50–215 mm</td><td style="text-align:left"><em>Aperture Size and Eye Relief</em></td></tr>
+<tr><td style="text-align:left"><strong>W</strong> / <strong>S</strong></td><td style="text-align:left">Sight height $\pm 1$ mm</td><td style="text-align:left">$\geq 20$ mm</td><td style="text-align:left"><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
+<tr><td style="text-align:left"><strong>Z</strong> / <strong>X</strong></td><td style="text-align:left">Rifle cant $\pm 0.57^{\circ}$</td><td style="text-align:left">unlimited</td><td style="text-align:left"><em>Rifle Cant</em></td></tr>
+<tr><td style="text-align:left">Arrow keys</td><td style="text-align:left">Rear-sight clicks $\pm 1$</td><td style="text-align:left">unlimited</td><td style="text-align:left"><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
+<tr><td style="text-align:left"><strong>G</strong> / <strong>H</strong></td><td style="text-align:left">Click value $\pm 0.01$ mm</td><td style="text-align:left">0.01–0.10 mm</td><td style="text-align:left"><em>Mechanical Sight Adjustment (Clicks)</em></td></tr>
+<tr><td style="text-align:left"><strong>O</strong> / <strong>P</strong></td><td style="text-align:left">Wind speed $\pm 0.5$ m/s</td><td style="text-align:left">0–10 m/s</td><td style="text-align:left"><em>Wind Drift</em></td></tr>
+<tr><td style="text-align:left"><strong>K</strong> / <strong>L</strong></td><td style="text-align:left">Wind direction $\pm 8.6^{\circ}$</td><td style="text-align:left">full circle</td><td style="text-align:left"><em>Wind Drift</em></td></tr>
+<tr><td style="text-align:left"><strong>T</strong></td><td style="text-align:left">Toggle 10 m / 50 m target</td><td style="text-align:left">—</td><td style="text-align:left"><em>Exterior Ballistics: Gravity and Trajectory</em></td></tr>
+<tr><td style="text-align:left"><strong>R</strong></td><td style="text-align:left">Reset all parameters to defaults</td><td style="text-align:left">—</td><td style="text-align:left">—</td></tr>
+<tr><td style="text-align:left"><strong>F</strong></td><td style="text-align:left">Toggle language (English / French)</td><td style="text-align:left">—</td><td style="text-align:left">—</td></tr>
+</table></div>
 
 ## Quick-Start Walkthrough
 
